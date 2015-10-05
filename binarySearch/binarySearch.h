@@ -2,6 +2,6 @@
 #define BINARY_SEARCH_H
 #include <vector>
 
-int search(std::vector<int> &a, int key);
+int search(const std::vector<int> &a, int key);
 
 #endif
