@@ -1,7 +1,6 @@
 #include "binarySearch.h"
 
-template <typename T>
-int search(const std::vector<T> &a, const T &key) {
+int search(const std::vector<int> &a, const int &key) {
     int lo = 0;
     int hi = a.size()-1;
     
