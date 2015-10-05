@@ -4,8 +4,8 @@
 
 int main(void) {
     
-    std::vector<int> v{1,2,3,4,5,6,7,8,9};
-    std::cout<<search(v, 6)<<std::endl;
+    std::vector<double> v{1.1,2.2,3.5,4.5,5.6,6.7,7.8,8.4,9.4};
+    std::cout<<search(v, 4.5)<<std::endl;
     
     return 0;
 }
