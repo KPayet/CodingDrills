@@ -3,24 +3,12 @@
 
 int main(int argc, char *argv[]){
 
-    linkedList *l = new linkedList();
+    std::vector<int> a = {1, 2, 3, 4, 5};
+    for(auto x: a) {
+        std::cout<<x<<std::endl;
+    }
+    linkedList *l = new linkedList(a);
     std::cout<<l<<std::endl;
-    l->addFirst(6);
-    std::cout<<l<<std::endl;
-    l->addLast(12);
-    std::cout<<l<<std::endl;
-    l->addFirst(6);
-    std::cout<<l<<std::endl;
-    l->addFirst(6);
-    std::cout<<l<<std::endl;
-    l->addLast(18);
-    std::cout<<l<<std::endl;
-    l->removeLast();
-    std::cout<<l<<std::endl;
-    l->removeLast();
-    std::cout<<l<<std::endl;
-    l->removeFirst();
-
     delete l;
 
     return 0;

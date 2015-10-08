@@ -1,6 +1,7 @@
 #ifndef LINKEDLIST_H
 #define LINKEDLIST_H
 #include <iostream>
+#include <vector>
 
 class linkedList {
 private:
@@ -23,6 +24,16 @@ public:
         first = nullptr;
         last = nullptr;
         N=0;
+    }
+    linkedList(std::vector<int> &v) {
+        first = nullptr;
+        last = nullptr;
+        N=0;
+        for(auto x: v)
+            addLast(x);
+    }
+    linkedList(const linkedList &cSource) { // copy constructor
+        // implement me :(
     }
     ~linkedList() {
         while(N)
