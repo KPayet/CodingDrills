@@ -2,32 +2,32 @@
 #define LINKEDLIST_H
 #include <iostream>
 #include <vector>
+#include <memory>
 
+template <typename T>
 class linkedList {
 private:
 
+    class Node;
+    typedef std::shared_ptr<Node> NodeSharedPtr;
     // helper class Node
     class Node {
     public:
-        int data;
-        Node *prev;
-        Node *next;
-        Node(int val, Node* p, Node* n):data(val), prev(p), next(n) {}
+        T data;
+        NodeSharedPtr prev;
+        NodeSharedPtr next;
+        Node(T val, NodeSharedPtr p, NodeSharedPtr n):data(val), prev(p), next(n) {}
         ~Node(){}
     }; // end class Node
-    Node *first;
-    Node *last;
+    NodeSharedPtr first;
+    NodeSharedPtr last;
     int N;
 public:
 
     linkedList() {
-        first = nullptr;
-        last = nullptr;
         N=0;
     }
-    linkedList(std::vector<int> &v) {
-        first = nullptr;
-        last = nullptr;
+    linkedList(std::vector<T> &v) {
         N=0;
         for(auto x: v)
             addLast(x);
@@ -38,55 +38,49 @@ public:
     ~linkedList() {
         while(N)
             removeFirst();
-        delete first;
-        delete last;
     }
-    void addFirst(int data) {
-        first = new Node(data, nullptr, first);
+    void addFirst(T data) {
+        first = NodeSharedPtr(new Node(data, nullptr, first));
         if(!last)
             last = first;
         ++N;
     }
-    void addLast(int data) {
+    void addLast(T data) {
         if(!last) {
             addFirst(data);
             return;
         }
-        last->next = new Node(data, last, nullptr);
+        last->next = NodeSharedPtr(new Node(data, last, nullptr));
         last = last->next;
         ++N;
     }
     void removeFirst() {
         if(!first) return;
         if(!first->next) {
-            delete first;
             first = nullptr;
             last = nullptr;
             --N;
             return;
         }
-        Node *oldfirst = first;
         first = first->next;
         first->prev = nullptr;
-        delete oldfirst;
-        oldfirst = 0;
         --N;
     }
     void removeLast() {
         if(!last) return;
         if(!last->prev){
-            delete last;
             first = nullptr;
             last = nullptr;
             --N;
             return;
         }
-        Node *oldlast = last;
         last = last->prev;
         last->next = nullptr;
-        delete oldlast;
-        oldlast = 0;
         --N;
+    }
+    void clear() {
+        while(N)
+            removeFirst();
     }
     int size() {
         return N;
@@ -96,12 +90,13 @@ public:
     }
 
     //overloading ostream operator to be able to use std::cout<<myLinkedList;
+    // Works as long as your type T overloads std::ostream& operator<< ...
     friend std::ostream& operator<< (std::ostream &out, const linkedList &lList){
         if(!lList.N) {
             out<<" ";
             return out;
         }
-        Node *x = lList.first;
+        NodeSharedPtr x = lList.first;
         while(x) {
             out<<x->data<<" ";
             x = x->next;
