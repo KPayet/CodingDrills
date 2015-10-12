@@ -5,20 +5,25 @@
 #include <memory>
 
 template <typename T>
+class linkedList;
+// helper class Node
+template <typename T>
+class Node {
+    friend class linkedList<T>;
+    typedef std::shared_ptr<Node<T> > NodeSharedPtr;
+public:
+    T data;
+    NodeSharedPtr prev;
+    NodeSharedPtr next;
+    Node(T val, NodeSharedPtr p, NodeSharedPtr n):data(val), prev(p), next(n) {}
+    ~Node(){}
+}; // end class Node
+
+
+template <typename T>
 class linkedList {
 private:
-
-    class Node;
-    typedef std::shared_ptr<Node> NodeSharedPtr;
-    // helper class Node
-    class Node {
-    public:
-        T data;
-        NodeSharedPtr prev;
-        NodeSharedPtr next;
-        Node(T val, NodeSharedPtr p, NodeSharedPtr n):data(val), prev(p), next(n) {}
-        ~Node(){}
-    }; // end class Node
+    typedef std::shared_ptr<Node<T> > NodeSharedPtr;
     NodeSharedPtr first;
     NodeSharedPtr last;
     int N;
@@ -40,7 +45,7 @@ public:
             removeFirst();
     }
     void addFirst(T data) {
-        first = NodeSharedPtr(new Node(data, nullptr, first));
+        first = NodeSharedPtr(new Node<T>(data, nullptr, first));
         if(!last)
             last = first;
         ++N;
@@ -50,7 +55,7 @@ public:
             addFirst(data);
             return;
         }
-        last->next = NodeSharedPtr(new Node(data, last, nullptr));
+        last->next = NodeSharedPtr(new Node<T>(data, last, nullptr));
         last = last->next;
         ++N;
     }
@@ -107,5 +112,5 @@ public:
         out<<*lList;
         return out;
     }
-};
+}; // end class linkedList
 #endif // LINKEDLIST_H
