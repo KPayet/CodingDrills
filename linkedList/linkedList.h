@@ -1,32 +1,100 @@
 #ifndef LINKEDLIST_H
 #define LINKEDLIST_H
+
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <cassert>
+#include <cstddef>
+#include <iterator>
+#include <type_traits>
+#include <utility>
 
-template <typename T>
-class linkedList;
-// helper class Node
-template <typename T>
-class Node {
-    friend class linkedList<T>;
-    typedef std::shared_ptr<Node<T> > NodeSharedPtr;
-public:
-    T data;
-    NodeSharedPtr prev;
-    NodeSharedPtr next;
-    Node(T val, NodeSharedPtr p, NodeSharedPtr n):data(val), prev(p), next(n) {}
-    ~Node(){}
-}; // end class Node
-
-
-template <typename T>
+template <class T>
 class linkedList {
+
 private:
-    typedef std::shared_ptr<Node<T> > NodeSharedPtr;
+
+    class Node {
+    friend class linkedList<T>;
+        typedef std::shared_ptr<Node> NodeSharedPtr;
+
+    public:
+        T data;
+        NodeSharedPtr prev;
+        NodeSharedPtr next;
+        Node(T val, NodeSharedPtr p, NodeSharedPtr n):data(val), prev(p), next(n) {}
+        ~Node(){}
+    }; // end class Node
+
+    typedef std::shared_ptr<Node> NodeSharedPtr;
     NodeSharedPtr first;
     NodeSharedPtr last;
     int N;
+
+    template <bool is_const_iterator = true>
+    class const_noconst_iterator : public std::iterator<std::bidirectional_iterator_tag, T>
+    {
+        typedef typename std::conditional<is_const_iterator, const linkedList*, linkedList*>::type DataStructurePointerType;
+        typedef typename std::conditional<is_const_iterator, const T&, T&>::type ValueReferenceType;
+
+        Node* itr;
+        explicit const_noconst_iterator(Node* nd) : itr(nd) { }
+
+    public:
+
+        const_noconst_iterator(): itr(nullptr) { }
+
+        const_noconst_iterator(const const_noconst_iterator<false>& other) : itr(other.itr)
+        {
+        }
+
+        void swap(const_noconst_iterator& other) noexcept {
+            std::swap(itr, other.iter);
+        }
+
+        const_noconst_iterator& operator++(){
+            assert(itr != nullptr && "Out-of-bounds iterator increment!");
+            itr = itr->next;
+            return *this;
+        }
+
+        const_noconst_iterator operator++(int){
+            assert(itr != nullptr && "Out-of-bounds iterator increment!");
+            const_noconst_iterator tmp(*this);
+            itr = itr->next;
+            return tmp;
+        }
+
+        bool operator==(const const_noconst_iterator& rhs) const {
+            return itr == rhs.itr;
+        }
+
+        bool operator != (const const_noconst_iterator& rhs) const {
+            return itr != rhs.itr;
+        }
+
+        ValueReferenceType operator*() const{
+            assert(itr != nullptr && "Invalid iterator dereference!");
+            return itr->data;
+        }
+
+        ValueReferenceType operator->() const{
+            assert(itr != nullptr && "Invalid iterator dereference!");
+            return itr->data;
+        }
+
+//        // One way conversion: iterator -> const_iterator
+//        operator const_noconst_iterator<const Type>() const{
+//            return const_noconst_iterator<const Type>(itr);
+//        }
+        friend class const_noconst_iterator<true>;
+    }; // end class const_noconst_iterator
+
+    // `iterator` and `const_iterator` used by your class:
+    typedef const_noconst_iterator<false> iterator;
+    typedef const_noconst_iterator<true> const_iterator;
+
 public:
 
     linkedList() {
@@ -45,7 +113,7 @@ public:
             removeFirst();
     }
     void addFirst(T data) {
-        first = NodeSharedPtr(new Node<T>(data, nullptr, first));
+        first = NodeSharedPtr(new Node(data, nullptr, first));
         if(!last)
             last = first;
         ++N;
@@ -55,7 +123,7 @@ public:
             addFirst(data);
             return;
         }
-        last->next = NodeSharedPtr(new Node<T>(data, last, nullptr));
+        last->next = NodeSharedPtr(new Node(data, last, nullptr));
         last = last->next;
         ++N;
     }
