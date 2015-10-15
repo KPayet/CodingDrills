@@ -1,3 +1,13 @@
+// ---------------------------------------------------------------------------
+// This software is in the public domain, furnished "as is", without technical
+// support, and with no warranty, express or implied, as to its usefulness for
+// any purpose.
+//
+// LinkedList.H
+// declares a custom linked list template class that implement STL-style iterator, for use with range-based for loop.
+//
+// Author: Kevin Payet
+// ---------------------------------------------------------------------------
 #ifndef LINKEDLIST_H
 #define LINKEDLIST_H
 
@@ -7,6 +17,16 @@
 #include <cassert>
 #include <iterator>
 
+//
+//  Declaration of a custom linked list class
+//  Example:
+//  std::vector<double> a = {1.5, 2.5, 3.0, 4.9, 5.55, 5.154};
+//  linkedList<double> l1(a);
+//  LinkedList *l2<int> = new LinkedList<int>();
+//
+//  for(auto x: l1)
+//      l2->addFirst(x);
+//
 template <class T>
 class linkedList {
 
@@ -25,12 +45,8 @@ private:
         Node(T val, NodeSharedPtr p, NodeSharedPtr n):data(val), prev(p), next(n) {}
     }; // end class Node
 
-    NodeSharedPtr first;
-    NodeSharedPtr last;
-    int N;
-
     template <bool isConst>
-    class listIter : public std::iterator<std::bidirectional_iterator_tag, T>
+    class listIter : public std::iterator<std::forward_iterator_tag, T>
     {
     private:
 
@@ -79,6 +95,10 @@ private:
 
     typedef listIter<false> iterator;
     typedef listIter<true> const_iterator;
+
+    NodeSharedPtr first;
+    NodeSharedPtr last;
+    int N;
 
 public:
 
