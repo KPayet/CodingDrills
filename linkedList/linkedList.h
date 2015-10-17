@@ -21,14 +21,14 @@
 ///  Declaration of a custom linked list class
 ///  Example:
 ///  std::vector<double> a = {1.5, 2.5, 3.0, 4.9, 5.55, 5.154};
-///  linkedList<double> l1(a);
+///  LinkedList<double> l1(a);
 ///  LinkedList *l2<int> = new LinkedList<int>();
 ///
 ///  for(auto x: l1)
 ///      l2->addFirst(x);
 ///
 template <class T>
-class linkedList {
+class LinkedList {
 
 private:
 
@@ -74,7 +74,7 @@ private:
     /// respectively for ListIter<true> and ListIter<false>
     ///
     template <bool isConst>
-    class listIter : public std::iterator<std::forward_iterator_tag, T>
+    class ListIter : public std::iterator<std::forward_iterator_tag, T>
     {
     private:
 
@@ -95,11 +95,11 @@ private:
         /// The Constructors for the iterator class
         /// Pretty basic
         ///
-        listIter(): itr(nullptr) { } /// implemented out of habit, but actually never used in the
+        ListIter(): itr(nullptr) { } /// implemented out of habit, but actually never used in the
 
-        listIter(NodeSharedPtr n): itr(n) { }
+        ListIter(NodeSharedPtr n): itr(n) { }
 
-        listIter(const listIter<isConst>& other) : itr(other.itr) { }
+        ListIter(const ListIter<isConst>& other) : itr(other.itr) { }
 
         ///
         /// To implement a STL-style iterator, there are a few requirements regarding the operators to overload:
@@ -112,15 +112,15 @@ private:
         /// operator++
         /// Simply make the iterator point to the next Node in the LinkedList
         ///
-        listIter& operator++(){ /// pre-increment ++
+        ListIter& operator++(){ /// pre-increment ++
             assert(itr != nullptr && "Out-of-bounds iterator increment");
             itr = itr->next;
             return *this;
         }
 
-        listIter operator++(int){ /// post-increment. uses pre-increment operator
+        ListIter operator++(int){ /// post-increment. uses pre-increment operator
             assert(itr != nullptr && "Out-of-bounds iterator increment");
-            listIter tmp(*this);
+            ListIter tmp(*this);
             itr = itr->next;
             return tmp;
         }
@@ -130,11 +130,11 @@ private:
         /// Both are const, for const correctness
         ///
 
-        bool operator==(const listIter& other) const {
+        bool operator==(const ListIter& other) const {
             return itr == other.itr;
         }
 
-        bool operator != (const listIter& other) const {
+        bool operator != (const ListIter& other) const {
             return itr != other.itr;
         }
 
@@ -157,13 +157,13 @@ private:
         /// And that's it for this class
         ///
         }
-    }; // end class listIter
+    }; // end class ListIter
 
     ///
     /// Like I said above, define aliases iterator and const_iterator for range-based for to use
     ///
-    typedef listIter<false> iterator;
-    typedef listIter<true> const_iterator;
+    typedef ListIter<false> iterator;
+    typedef ListIter<true> const_iterator;
 
 
     ///
@@ -183,19 +183,19 @@ public:
     /// Constructors
     ///
 
-    linkedList() {  /// create empty LinkedList by setting N to 0.
+    LinkedList() {  /// create empty LinkedList by setting N to 0.
         N=0;        /// Doesn't have to explicitly set first and last to nullptr, but let shared_ptr deal with it.
     }
 
     /// Create LinkedList by copying values from vector
     /// I simply added support for vectors, because that's what you should use most of the time
     /// And since user is me :), well I know I will do it...
-    linkedList(std::vector<T> &v) : LinkedList() {
+    LinkedList(std::vector<T> &v) : LinkedList() {
         for(auto x: v)
             addLast(x); /// we need to addLast, to preserve the order of the input vector
     }
 
-    linkedList(const linkedList &cSource) : LinkedList() { /// copy constructor
+    LinkedList(const LinkedList &cSource) : LinkedList() { /// copy constructor
         for(auto x: cSource)    /// that's why implementing iterator above is neat
             addLast(x);
     }
@@ -205,7 +205,7 @@ public:
     /// I simply remove every Node one at a time, i.e., stop pointing to it (see remove functions)
     /// shared_ptr deals with the memory
     ///
-    ~linkedList() {
+    ~LinkedList() {
         while(N)
             removeFirst();
     }
@@ -279,49 +279,58 @@ public:
         --N;
         }
 
-    ///
-    ///
-    ///
+    /// remove all Nodes from list
     void clear() {
         while(N)
             removeFirst();
     }
 
-    int size() {
+    int size() {    // self-explanatory
         return N;
     }
 
-    bool isEmpty() {
+    bool isEmpty() {    // idem
         return N==0;
     }
 
+    /// print all data values in the list
     void print() {
         if(!N) return;
-        NodeSharedPtr x = first;
-        while(x) {
-            std::cout<<x->data<<" ";
-            x = x->next;
+
+        for(auto x: this) {
+            std::cout<<x<<" ";
         }
         std::cout<<std::endl;
     }
 
-    iterator begin() {
+    ///
+    /// begin and end member functions used by range-based for
+    /// The two last one are so it can also be used on pointers:
+    /// LinkedList *l = new LinkedList(a);
+    /// for(auto x: l) { ... }
+    ///
+    /// Otherwise, it didn't work.
+    ///
+    /// With (auto x: l), x is not modifiable
+    /// To modify data from the list, use (auto &x: l)
+    ///
+    iterator begin() {  /// for( auto x = l.begin(); ...
         return iterator(first);
     }
 
-    iterator end() {
+    iterator end() {    /// ...x != l.end(); x++) { ... }
         return iterator(nullptr);
     }
 
     template <class T2>
-    friend iterator begin(linkedList<T2> *l){
+    friend iterator begin(LinkedList<T2> *l){
         return (*l).begin();
     }
 
     template <class T2>
-    friend iterator end(linkedList<T2> *l) {
+    friend iterator end(LinkedList<T2> *l) {
         return (*l).end();
     }
 
-}; // end class linkedList
+}; // end class LinkedList
 #endif // LINKEDLIST_H
