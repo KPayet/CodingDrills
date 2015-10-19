@@ -279,6 +279,18 @@ public:
         --N;
         }
 
+    ///
+    /// I need two functions to access the data from the first and last Nodes
+    /// This will help for implementing queue for example
+    ///
+    T getFront() {
+        return first->data;
+    }
+
+    T getTail() {
+        return last->data;
+    }
+
     /// remove all Nodes from list
     void clear() {
         while(N)
