@@ -1,3 +1,14 @@
+// ---------------------------------------------------------------------------
+// This software is in the public domain, furnished "as is", without technical
+// support, and with no warranty, express or implied, as to its usefulness for
+// any purpose.
+//
+// Queue.h
+// declares a simple queue template class.
+// No iterator is implemented, but I might do it later for fun.
+//
+// Author: Kevin Payet
+// ---------------------------------------------------------------------------
 #ifndef QUEUE_H
 #define QUEUE_H
 
