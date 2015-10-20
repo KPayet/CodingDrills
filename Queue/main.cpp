@@ -8,17 +8,18 @@ int main(int argc, char* argv[]) {
     using std::cout;
     using std::endl;
 
-    Queue q;
+    Queue<double> q;
 
-    for(int i=1; i<20; i++)
-        q.enqueue(i);
+    for(int i=1; i<1000; i++)
+        q.enqueue(i+0.5);
+
     cout<<q.size()<<endl;
-    cout<<q.peek()<<endl;
 
     while(!q.isEmpty())
         cout<<q.dequeue()<<endl;
 
-    q.dequeue();
+    if(q.isEmpty())
+        cout<<"Empty!!"<<endl;
 
     return 0;
 }

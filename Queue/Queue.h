@@ -5,10 +5,16 @@
 #include <cassert>
 
 ///
-/// Simple Queue class, not double-ended
+/// Simple Queue template class, not double-ended
 /// The class is built upon a doubly-linked list
 /// See LinkedList/LinkedList.h
 ///
+/// I thought about adding an iterator to the class, to be able to use range-based for
+/// i.e. loop, and dequeue each item on at a time
+/// But I judged that the user can do that pretty easily, e.g. while(!q.isEmpty()) T item = q.dequeue(); ...
+/// I might do it later, strictly for the exercise
+///
+template <class T>
 class Queue
 {
 private:
@@ -19,13 +25,16 @@ private:
     /// The Queue class is simply just ensuring that the list is used FIFO-style
     /// For more details about that class, see ../LinkedList/LinkedList.h
     ///
-    LinkedList<int> intList; /// the list is dynamic.
+    LinkedList<T> internalList; /// the list is dynamic.
 
 public:
 
         ///
-        /// Constructors
+        /// Constructors/Destructor
         ///
+
+        /// Right now the Queue is only designed to be built empty, and items enqueued when needed
+        /// Could add constructor from an array, vector... but the user can do that easily on its own.
         Queue() {}
         virtual ~Queue() {}
 
@@ -35,14 +44,19 @@ public:
         /// This can be implemented easily by adding last for enqueue
         /// and removing first for dequeue
         ///
-        void enqueue(int v) {
-            intList.addLast(v);
+        void enqueue(T v) {
+            internalList.addLast(v);
         }
 
-        int dequeue() {
-            assert(!this->isEmpty() && "Trying to dequeue from empty Queue!");
-            int item = intList.getFront();
-            intList.removeFirst();
+        /// Here, we have to assert that the user doesn't try to dequeue from an empty Queue
+        /// Either use assert, or simply do nothing.
+        /// I feel assert is better because it tells the user that he might be doing something weird
+        T dequeue() {
+            assert(!this->isEmpty() && "Trying to dequeue from empty Queue!"); /// stop execution if trying to dequeue from empty queue
+
+            /// pop front
+            T item = internalList.getFront();
+            internalList.removeFirst();
 
             return item;
         }
@@ -50,7 +64,7 @@ public:
         /// Empty Queue
         /// Simply use the clear routine in list implementation
         void clear() {
-            intList.clear();
+            internalList.clear();
         }
 
         ///
@@ -60,16 +74,16 @@ public:
 
         /// If you want to see the next item to be dequeued
         /// but don't want it removed
-        int peek() {
-            return intList.getFront();
+        T peek() {
+            return internalList.getFront();
         }
 
-        int size() { /// self-explanatory
-            return intList.size();
+        int size() {    /// self-explanatory
+            return internalList.size();
         }
 
-        bool isEmpty() {
-            return intList.isEmpty();
+        bool isEmpty() {    /// idem
+            return internalList.isEmpty();
         }
 };
 
