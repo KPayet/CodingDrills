@@ -20,8 +20,11 @@ int main(int argc, char* argv[]) {
 
     Stack<double> s2;
 
-    for(int i=1; i<10; i++)
+    for(int i=1; i<10; i++){
         s2.push(i+0.5);
+    }
+
+    cout<<s2.size()<<endl;
 
     while(!s2.isEmpty())
         cout<<s2.pop()<<endl;
