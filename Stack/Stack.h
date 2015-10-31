@@ -17,9 +17,9 @@
 #include <vector>
 
 ///
-/// Simple Stack template class, not double-ended
-/// The class uses the dynamic array based implementation
-/// The API is obviously the same as the linked-list based implemetation.
+/// Simple Stack template class, not double-ended.
+/// The class uses the dynamic array based implementation.
+/// The API is obviously the same as the linked-list based implementation.
 /// Only the internals change: use array to hold items + top and capacity variables + add functions to resize
 /// in push or pop functions + the functions in the private section.
 /// However, I can also cheat and use an std::vector as internal array, and let it do all the resizing needed...
