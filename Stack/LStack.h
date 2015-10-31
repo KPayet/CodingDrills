@@ -3,20 +3,20 @@
 // support, and with no warranty, express or implied, as to its usefulness for
 // any purpose.
 //
-// Stack.h
+// LStack.h
 // declares a simple stack template class, with linked list implementation.
 // No iterator is implemented, but I might do it later for fun.
 //
 // Author: Kevin Payet
 // ---------------------------------------------------------------------------
-#ifndef STACK_H
-#define STACK_H
+#ifndef LSTACK_H
+#define LSTACK_H
 
 #include "LinkedList.h"
 #include <cassert>
 
 ///
-/// Simple Stack template class, not double-ended
+/// Simple LStack template class, not double-ended
 /// The class is built upon a doubly-linked list
 /// See LinkedList/LinkedList.h
 ///
@@ -26,14 +26,14 @@
 /// I might do it later, strictly for the exercise
 ///
 template <class T>
-class Stack
+class LStack
 {
 private:
 
     ///
     /// Internal linked list the stack is based upon.
     /// As you will see below, it is this class that does all the work
-    /// The Stack class is simply just ensuring that the list is used LIFO-style
+    /// The LStack class is simply just ensuring that the list is used LIFO-style
     /// For more details about that class, see ../LinkedList/LinkedList.h
     ///
     LinkedList<T> internalList; /// the list is dynamic.
@@ -44,14 +44,14 @@ public:
         /// Constructors/Destructor
         ///
 
-        /// Right now the Stack is only designed to be built empty, and items pushd when needed
+        /// Right now the LStack is only designed to be built empty, and items pushd when needed
         /// Could add constructor from an array, vector... but the user can do that easily on its own.
-        Stack() {}
-        virtual ~Stack() {}
+        LStack() {}
+        virtual ~LStack() {}
 
         ///
         /// push and pop operations
-        /// Stack is a LIFO access type data structure
+        /// LStack is a LIFO access type data structure
         /// This can be implemented easily by adding first for push
         /// and removing first for pop
         ///
@@ -59,11 +59,11 @@ public:
             internalList.addFirst(v);
         }
 
-        /// Here, we have to assert that the user doesn't try to pop from an empty Stack
+        /// Here, we have to assert that the user doesn't try to pop from an empty LStack
         /// Either use assert, or simply do nothing.
         /// I feel assert is better because it tells the user that he might be doing something weird
         T pop() {
-            assert(!this->isEmpty() && "Trying to pop from empty Stack!"); /// stop execution if trying to pop from empty stack
+            assert(!this->isEmpty() && "Trying to pop from empty LStack!"); /// stop execution if trying to pop from empty stack
 
             /// pop front
             T item = internalList.getFront();
@@ -72,15 +72,15 @@ public:
             return item;
         }
 
-        /// Empty Stack
+        /// Empty LStack
         /// Simply use the clear routine in list implementation
         void clear() {
             internalList.clear();
         }
 
         ///
-        /// Members that don't modify the Stack
-        /// Could be const functions, but I don't really see the point of declaring a const Stack
+        /// Members that don't modify the LStack
+        /// Could be const functions, but I don't really see the point of declaring a const LStack
         ///
 
         /// If you want to see the next item to be popped
@@ -98,4 +98,4 @@ public:
         }
 };
 
-#endif // STACK_H
+#endif // LSTACK_H
