@@ -1,4 +1,6 @@
 #include "LStack.h"
+#include "Stack.h"
+
 
 #include <iostream>
 #include <vector>
@@ -13,13 +15,16 @@ int main(int argc, char* argv[]) {
     for(int i=1; i<10; i++)
         s.push(i+0.5);
 
-    cout<<s.size()<<endl;
-
     while(!s.isEmpty())
         cout<<s.pop()<<endl;
 
-    if(s.isEmpty())
-        cout<<"Empty!!"<<endl;
+    Stack<double> s2;
+
+    for(int i=1; i<10; i++)
+        s2.push(i+0.5);
+
+    while(!s2.isEmpty())
+        cout<<s2.pop()<<endl;
 
     return 0;
 }
