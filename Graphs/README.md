@@ -1,0 +1,3 @@
+#Graph
+
+This folder contains everything linked to graph/networks, i.e. graphs data structures, and other algorithms linked, e.g. Kruskal MST algorithm, Dijsktra SPT ...
