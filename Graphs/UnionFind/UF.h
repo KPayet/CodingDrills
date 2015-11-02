@@ -23,11 +23,22 @@
 
 class UF
 {
-public:
-        UF();
-
 private:
-        unsigned int m_Counter;
+        int nComponents;  // number of connected components
+        int *parent; // parent[i] gives the parent of site i
+        int *sz;    // sz[i] gives the size of the subtree site i belongs to
+public:
+        ///
+        /// Initializes a Union-Find data structure with N sites
+        ///
+        UF(int N);
+
+        ~UF();
+
+//        void union(int p, int q);
+//        int find(int p);
+//        bool connected(int p, int q);
+//        int count() {return nComponents;}
 };
 
 #endif // UF_H
