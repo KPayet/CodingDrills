@@ -49,7 +49,7 @@ private:
         /// Weighting solves this problem by connecting the SMALLER tree to the bigger one.
         /// And the information about the sizes of subtrees is stored inside this sz array...
         ///
-        int *sz;    // sz[i] gives the size of the subtree site i belongs to
+        int *sz;    // sz[i] gives the size of the subtree with root i
 
 public:
         ///
