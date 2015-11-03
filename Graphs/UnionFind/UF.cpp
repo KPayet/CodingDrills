@@ -8,7 +8,7 @@ UF::UF(int N): nSites(N) {
     parent = new int[N];
     sz = new int[N];
     for(int i=0; i<N; i++) {
-        parent[i] = i;  /// each site starts at the root of its own subtree
+        parent[i] = i;  /// each site starts as the root of its own subtree
         sz[i] = 1;      /// subtree who is of size 1
     }
 }
