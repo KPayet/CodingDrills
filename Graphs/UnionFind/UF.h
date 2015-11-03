@@ -58,8 +58,8 @@ public:
 
         ~UF();
 
-        void union(int p, int q);
-        int find(int p);
+        void Union(int p, int q);
+        int Find(int p);
 //        bool connected(int p, int q);
 //        int count() {return nComponents;}
 };
