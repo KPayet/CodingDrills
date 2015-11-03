@@ -1,7 +1,9 @@
 #include "UF.h"
-#include <iostream>
+#include <cassert>
 
-UF::UF(int N) {
+UF::UF(int N): nSites(N) {
+    assert(N>0 && "Trying to instantiate UF data structure with negative number of sites!");
+
     nComponents = N;
     parent = new int[N];
     sz = new int[N];
@@ -21,6 +23,9 @@ UF::~UF() {
 ///
 void UF::Union(int p, int q) {
 
+    assert( ((p > 0 && p < nSites) && (q > 0 && q < nSites)) &&
+           "Index site out-of-bounds. Make sure index is positive, and smaller than number of sites" );
+
     int pRoot = Find(p);
     int qRoot = Find(q);
 
@@ -38,6 +43,8 @@ void UF::Union(int p, int q) {
 
 int UF::Find(int p) {
 
+    assert( (p > 0 && p < nSites) && "Index site out-of-bounds. Make sure index is positive, and smaller than number of sites" );
+
     while(p != parent[p]) { /// this here is the Find routine. A site is represented by the root of its subtree
         ///
         /// When we say that we implement path compression, it only means adding the following line
@@ -52,5 +59,9 @@ int UF::Find(int p) {
 
 /// trivial
 bool UF::connected(int p, int q) {
+
+    assert( ((p > 0 && p < nSites) && (q > 0 && q < nSites)) &&
+           "Index site out-of-bounds. Make sure index is positive, and smaller than number of sites" );
+
     return Find(p) == Find(q);
 }

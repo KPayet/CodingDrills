@@ -34,6 +34,7 @@
 class UF
 {
 private:
+        const int nSites;
         int nComponents;  // number of connected components
         ///
         /// The tree structure is entirely defined by the parent array
@@ -61,7 +62,8 @@ public:
         void Union(int p, int q);
         int Find(int p);
         bool connected(int p, int q);
-        //int count() {return nComponents;}
+        int count() {return nComponents;}
+        int sites() {return nSites;}
 };
 
 #endif // UF_H
