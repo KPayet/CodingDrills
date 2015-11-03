@@ -1,4 +1,5 @@
 #include "UF.h"
+#include <iostream>
 
 UF::UF(int N) {
     nComponents = N;
@@ -30,26 +31,26 @@ void UF::Union(int p, int q) {
     if(sz[pRoot] < sz[qRoot]) { parent[pRoot] = qRoot; sz[qRoot] += sz[pRoot]; }
     else { parent[qRoot] = pRoot; sz[pRoot] += sz[qRoot]; }
 
-    nComponents--; /// we just connected two components, so we have one less
+    --nComponents; /// we just connected two components, so we have one less
+
+    return;
 }
 
 int UF::Find(int p) {
 
-    int root = p;
-
-    while(root != parent[root]) /// this here is the Find routine. A site is represented by the root of its subtree
-        root = parent[root];
-
-    /// This second part is called path compression
-    /// It is meant solely as an optimization step
-    /// It allows to get trees that are even shallower
-    /// In terms of performance, Weighted Quick Union guarantees O(logN) time for union and Find
-    /// With path compression, we get ~O(1) time, i.e. nearly constant (even if not really)
-    while(p != root) {
-        int newp = p;
-        parent[p] = root;
-        p = newp;
+    while(p != parent[p]) { /// this here is the Find routine. A site is represented by the root of its subtree
+        ///
+        /// When we say that we implement path compression, it only means adding the following line
+        ///
+        ///
+        parent[p] = parent[parent[p]];
+        p = parent[p];
     }
 
-    return root;
+    return p;
+}
+
+/// trivial
+bool UF::connected(int p, int q) {
+    return Find(p) == Find(q);
 }

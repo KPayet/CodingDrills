@@ -60,8 +60,8 @@ public:
 
         void Union(int p, int q);
         int Find(int p);
-//        bool connected(int p, int q);
-//        int count() {return nComponents;}
+        bool connected(int p, int q);
+        //int count() {return nComponents;}
 };
 
 #endif // UF_H
