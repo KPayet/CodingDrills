@@ -1,31 +1,25 @@
 #include "UF.h"
 
 #include <iostream>
+#include <fstream>
 
 int main(int argc, char *argv[])
 {
     using std::cout;
     using std::endl;
 
-    UF *uf = new UF(100);
+    std::ifstream input("testInput_1e6.txt");
 
-    cout<<uf->count()<<endl;
+    int N = 1000000;
 
-    cout<<uf->Find(10)<<endl;
-    cout<<uf->Find(11)<<endl;
+    UF *uf = new UF(N);
 
-    if(!uf->connected(10, 11))
-       cout<<"Not Connected!"<<endl;
+    std::string line;
 
-    uf->Union(10, -11);
+    while(std::getline(input, line)) {
+        cout<<line<<endl;
+    }
 
-    cout<<uf->count()<<endl;
-
-    cout<<uf->Find(10)<<endl;
-    cout<<uf->Find(11)<<endl;
-
-    if(uf->connected(10, 11))
-       cout<<"Connected!"<<endl;
-
+    delete uf;
     return 0;
 }
