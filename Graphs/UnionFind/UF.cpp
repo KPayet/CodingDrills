@@ -48,7 +48,11 @@ int UF::Find(int p) {
     while(p != parent[p]) { /// this here is the Find routine. A site is represented by the root of its subtree
         ///
         /// When we say that we implement path compression, it only means adding the following line
-        ///
+        /// Path compression modifies the subtrees in a way that the maximum depth tends to 1
+        /// i.e. after many find, the sites end up being connected directly to the root
+        /// i.e. for a subtree of size N, the root will have N-1 children sites, and in turn these sites shouldn't have children
+        /// Note that the text above describes an ideal case. We might never reach such perfect configuration,
+        /// but simply trying to achieve it still improves performance.
         ///
         parent[p] = parent[parent[p]];
         p = parent[p];

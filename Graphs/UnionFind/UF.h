@@ -59,9 +59,13 @@ public:
 
         ~UF();
 
+        /// Union(p, q) connects the two subtrees that contain sites p and q
         void Union(int p, int q);
+        /// Find(p) returns the component that contains site p
         int Find(int p);
+        /// Are two sites connected, i.e. are they in the same component?
         bool connected(int p, int q);
+
         int count() {return nComponents;}
         int sites() {return nSites;}
 };
