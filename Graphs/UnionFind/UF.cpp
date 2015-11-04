@@ -26,6 +26,7 @@ void UF::Union(int p, int q) {
     assert( ((p > 0 && p < nSites) && (q > 0 && q < nSites)) &&
            "Index site out-of-bounds. Make sure index is positive, and smaller than number of sites" );
 
+    /// This is the step that has a non negligible cost in terms of computation in this function
     int pRoot = Find(p);
     int qRoot = Find(q);
 
