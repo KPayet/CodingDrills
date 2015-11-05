@@ -19,13 +19,16 @@ int main(int argc, char *argv[])
 
     int counter = 0;
 
-    while(std::getline(input, line) && counter<1000) {
+    while(std::getline(input, line) && counter<1000000) {
         int p = std::stoi(line.substr(0, line.find(" ")));
         int q = std::stoi(line.substr(line.find(" ") + 1, line.length() - line.find(" ")));
         
 	uf->Union(p, q);
         ++counter;
     }
+
+    for(int i=1; i<N; i++)
+	uf->Find(i);
 
     delete uf;
     return 0;

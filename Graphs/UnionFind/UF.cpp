@@ -23,7 +23,7 @@ UF::~UF() {
 ///
 void UF::Union(int p, int q) {
 
-    assert( ((p > 0 && p < nSites) && (q > 0 && q < nSites)) &&
+    assert( ((p >= 0 && p < nSites) && (q >= 0 && q < nSites)) &&
            "Index site out-of-bounds. Make sure index is positive, and smaller than number of sites" );
 
     /// This is the step that has a non negligible cost in terms of computation in this function
@@ -44,7 +44,7 @@ void UF::Union(int p, int q) {
 
 int UF::Find(int p) {
 
-    assert( (p > 0 && p < nSites) && "Index site out-of-bounds. Make sure index is positive, and smaller than number of sites" );
+    assert( (p >= 0 && p < nSites) && "Index site out-of-bounds. Make sure index is positive, and smaller than number of sites" );
 
     while(p != parent[p]) { /// this here is the Find routine. A site is represented by the root of its subtree
         ///
@@ -65,7 +65,7 @@ int UF::Find(int p) {
 /// trivial
 bool UF::connected(int p, int q) {
 
-    assert( ((p > 0 && p < nSites) && (q > 0 && q < nSites)) &&
+    assert( ((p >= 0 && p < nSites) && (q >= 0 && q < nSites)) &&
            "Index site out-of-bounds. Make sure index is positive, and smaller than number of sites" );
 
     return Find(p) == Find(q);
