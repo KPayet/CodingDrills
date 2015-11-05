@@ -1,13 +1,13 @@
 #include "UF.h"
 #include <cassert>
 
-UF::UF(int N): nSites(N) {
+UF::UF(int32_t N): nSites(N) {
     assert(N>0 && "Trying to instantiate UF data structure with negative number of sites!");
 
     nComponents = N;
     parent = new int[N];
     sz = new int[N];
-    for(int i=0; i<N; i++) {
+    for(int32_t i=0; i<N; i++) {
         parent[i] = i;  /// each site starts as the root of its own subtree
         sz[i] = 1;      /// subtree who is of size 1
     }
@@ -21,14 +21,14 @@ UF::~UF() {
 ///
 /// Like explained in UF.h, union sets the root of smaller subtree to the bigger one
 ///
-void UF::Union(int p, int q) {
+void UF::Union(int32_t p, int32_t q) {
 
     assert( ((p >= 0 && p < nSites) && (q >= 0 && q < nSites)) &&
            "Index site out-of-bounds. Make sure index is positive, and smaller than number of sites" );
 
     /// This is the step that has a non negligible cost in terms of computation in this function
-    int pRoot = Find(p);
-    int qRoot = Find(q);
+    int32_t pRoot = Find(p);
+    int32_t qRoot = Find(q);
 
     /// if the sites are already connected, do nothing
     if(pRoot == qRoot) return;
@@ -42,7 +42,7 @@ void UF::Union(int p, int q) {
     return;
 }
 
-int UF::Find(int p) {
+int32_t UF::Find(int32_t p) {
 
     assert( (p >= 0 && p < nSites) && "Index site out-of-bounds. Make sure index is positive, and smaller than number of sites" );
 
@@ -63,7 +63,7 @@ int UF::Find(int p) {
 }
 
 /// trivial
-bool UF::connected(int p, int q) {
+bool UF::connected(int32_t p, int32_t q) {
 
     assert( ((p >= 0 && p < nSites) && (q >= 0 && q < nSites)) &&
            "Index site out-of-bounds. Make sure index is positive, and smaller than number of sites" );

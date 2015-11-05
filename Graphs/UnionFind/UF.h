@@ -7,7 +7,7 @@
 // any purpose.
 //
 // UF.H
-// This class represents a Union-Find data structure, used to maintain dynamic information
+// This class represents a Union-Find data structure, used to maint32_tain dynamic information
 // about the connectivity of graphs.
 // It supports the union and find operations, along with a connected operation for determining whether
 // two sites are in the same component and a count operation that
@@ -20,6 +20,8 @@
 //
 // Author: Kevin Payet
 // ---------------------------------------------------------------------------
+
+#include <stdint32_t.h>
 
 ///
 /// The weighted Quick Union implementation uses a tree representation for our data
@@ -34,12 +36,12 @@
 class UF
 {
 private:
-        const int nSites;
-        int nComponents;  // number of connected components
+        const int32_t nSites;
+        int32_t nComponents;  // number of connected components
         ///
         /// The tree structure is entirely defined by the parent array
         ///
-        int *parent; // parent[i] gives the parent of site i
+        int32_t *parent; // parent[i] gives the parent of site i
         ///
         /// The sz array is why this implementation is called Weighted
         /// In the simple Quick Union implementation, when doing union between two sites,
@@ -49,25 +51,25 @@ private:
         /// Weighting solves this problem by connecting the SMALLER tree to the bigger one.
         /// And the information about the sizes of subtrees is stored inside this sz array...
         ///
-        int *sz;    // sz[i] gives the size of the subtree with root i
+        int32_t *sz;    // sz[i] gives the size of the subtree with root i
 
 public:
         ///
         /// Initializes a Union-Find data structure with N sites
         ///
-        UF(int N);
+        UF(int32_t N);
 
         ~UF();
 
         /// Union(p, q) connects the two subtrees that contain sites p and q
-        void Union(int p, int q);
+        void Union(int32_t p, int32_t q);
         /// Find(p) returns the component that contains site p
-        int Find(int p);
+        int32_t Find(int32_t p);
         /// Are two sites connected, i.e. are they in the same component?
-        bool connected(int p, int q);
+        bool connected(int32_t p, int32_t q);
 
-        int count() {return nComponents;}
-        int sites() {return nSites;}
+        int32_t count() {return nComponents;}
+        int32_t sites() {return nSites;}
 };
 
 #endif // UF_H
