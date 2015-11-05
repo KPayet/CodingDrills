@@ -7,7 +7,7 @@
 // any purpose.
 //
 // UF.H
-// This class represents a Union-Find data structure, used to maint32_tain dynamic information
+// This class represents a Union-Find data structure, used to maintain dynamic information
 // about the connectivity of graphs.
 // It supports the union and find operations, along with a connected operation for determining whether
 // two sites are in the same component and a count operation that
@@ -21,7 +21,7 @@
 // Author: Kevin Payet
 // ---------------------------------------------------------------------------
 
-#include <stdint32_t.h>
+#include <stdint.h>
 
 ///
 /// The weighted Quick Union implementation uses a tree representation for our data
