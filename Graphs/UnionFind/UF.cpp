@@ -5,8 +5,8 @@ UF::UF(int32_t N): nSites(N) {
     assert(N>0 && "Trying to instantiate UF data structure with negative number of sites!");
 
     nComponents = N;
-    parent = new int[N];
-    sz = new int[N];
+    parent = new int32_t[N];
+    sz = new int32_t[N];
     for(int32_t i=0; i<N; i++) {
         parent[i] = i;  /// each site starts as the root of its own subtree
         sz[i] = 1;      /// subtree who is of size 1
