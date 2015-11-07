@@ -40,6 +40,7 @@ int main(int argc, char *argv[])
     if(std::is_sorted(v1.begin(), v1.end()))
         std::cout<<"Sorted!"<<std::endl;
     for(int i=0; i<20; i++) std::cout<<v1[i]<<std::endl;
+
     /// Now, my implementation
     std::vector<double> v2 = v; // so that I use the exact same inputs
 

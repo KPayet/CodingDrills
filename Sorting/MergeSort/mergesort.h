@@ -62,11 +62,11 @@ void insertionSort(std::vector<T> &a, int lo, int hi){
 template <typename T>
 void sort(std::vector<T> &a, std::vector<T> &aux, int lo, int hi){
 
-    if(hi <= lo + cutoffToInsertionSort){ // for small arrays, we cut to insertion sort
-        insertionSort(aux, lo, hi);
-        return;
-    }
-
+//    if(hi <= lo + cutoffToInsertionSort){ // for small arrays, we cut to insertion sort
+//        insertionSort(aux, lo, hi);
+//        return;
+//    }
+    if(hi <= lo) return;
     /// mergesort consists in splitting the array in two
     /// and recursively sort each part
     int mid = lo + (hi - lo)/2;
