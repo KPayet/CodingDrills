@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     Merge::sort(v);
     uint64_t endTime = GetTimeMs64();
 
-    std::cout<<(endTime - startTime)/1000<<std::endl;
+    std::cout<<(endTime - startTime)<<std::endl;
 
     return 0;
 }
