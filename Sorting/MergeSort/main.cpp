@@ -4,6 +4,7 @@
 #include <cassert>
 #include <random>
 #include <string>
+#include "benchmark.h"
 
 int main(int argc, char *argv[])
 {
@@ -28,7 +29,11 @@ int main(int argc, char *argv[])
     for(int i=0; i<N; ++i)
         v.push_back(dis(gen));
 
+    uint64_t startTime = GetTimeMs64();
     Merge::sort(v);
+    uint64_t endTime = GetTimeMs64();
+
+    std::cout<<(endTime - startTime)/1000<<std::endl;
 
     return 0;
 }
