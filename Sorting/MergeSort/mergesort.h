@@ -19,7 +19,8 @@ namespace Merge{
 
 namespace {
 
-void merge(std::vector<int> &a, std::vector<int> &aux, int lo, int mid, int hi){
+template <typename T>
+void merge(std::vector<T> &a, std::vector<T> &aux, int lo, int mid, int hi){
 
     // We merge a[lo:mid] with a[mid+1:hi]
     int i = lo, j = mid+1;
@@ -29,7 +30,7 @@ void merge(std::vector<int> &a, std::vector<int> &aux, int lo, int mid, int hi){
 
     /// now we copy-back to a, but in sorted order
     /// Merging is simply comparing each element of the two sub-arrays with indexes i and j defined above
-    /// and copy the smallest on to the original array, while incrementing the corresponding index.
+    /// and copy the smallest one to the original array, while incrementing the corresponding index.
     /// We simply need to be careful with the sub-arrays limit, i.e. watch out for when i>mid, or j>hi
     for (int k = lo; k <= hi; k++){
         // taking care of limit cases
@@ -42,7 +43,8 @@ void merge(std::vector<int> &a, std::vector<int> &aux, int lo, int mid, int hi){
     }
 }
 
-void sort(std::vector<int> &a, std::vector<int> &aux, int lo, int hi){
+template <typename T>
+void sort(std::vector<T> &a, std::vector<T> &aux, int lo, int hi){
 
     if(hi <= lo) return; // an array of one element is already sorted
 
@@ -59,14 +61,15 @@ void sort(std::vector<int> &a, std::vector<int> &aux, int lo, int hi){
     /// We merge the two sorted sub-arrays back together
     merge(a, aux, lo, mid, hi);
 }
-}
+} // namespace
 
-void sort(std::vector<int> &a) {
-    std::vector<int> aux(a.size(), 0);   // mergesort is not in place and requires an auxiliary array
+template <typename T>
+void sort(std::vector<T> &a) {
+    std::vector<T> aux(a.size(), 0);   // mergesort is not in place and requires an auxiliary array
     sort(a, aux, 0, a.size()-1);    // does all the work, but stays in the shadows...
 }
 
-}
+} // namespace Merge
 
 
 #endif // MERGESORT_H
