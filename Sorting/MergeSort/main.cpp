@@ -44,9 +44,9 @@ int main(int argc, char *argv[])
     for(int i=0; i<N; ++i)
         v2.push_back(dis(gen));
 
-    uint64_t startTime = GetTimeMs64();
+    startTime = GetTimeMs64();
     Merge::sort(v2);
-    uint64_t endTime = GetTimeMs64();
+    endTime = GetTimeMs64();
     std::cout<<"\nMerge::sort: "<<N<<" "<<(endTime - startTime)<<std::endl;
 
     if(std::is_sorted(v2.begin(), v2.end()))
