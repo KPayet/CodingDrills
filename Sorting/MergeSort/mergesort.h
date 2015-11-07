@@ -20,7 +20,7 @@ namespace Merge{
 
 namespace {
 
-const int cutoffToInsertionSort = 10;
+const int cutoffToInsertionSort = 20;
 
 template <typename T>
 void merge(std::vector<T> &a, std::vector<T> &aux, int lo, int mid, int hi){

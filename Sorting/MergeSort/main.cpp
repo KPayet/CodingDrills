@@ -5,6 +5,7 @@
 #include <random>
 #include <string>
 #include "benchmark.h"
+#include <algorithm>
 
 int main(int argc, char *argv[])
 {
@@ -22,18 +23,20 @@ int main(int argc, char *argv[])
 
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dis(0, 65535);
+    std::uniform_real_distribution<> dis(0, 10000000);
 
-    std::vector<int> v;
+    std::vector<double> v;
 
     for(int i=0; i<N; ++i)
         v.push_back(dis(gen));
 
     uint64_t startTime = GetTimeMs64();
-    Merge::sort(v);
+    std::sort(v.begin(), v.end());
     uint64_t endTime = GetTimeMs64();
-
-    std::cout<<(endTime - startTime)<<std::endl;
+    std::cout<<"std::sort: "<<N<<" "<<(endTime - startTime)<<std::endl;
+    
+    if(std::is_sorted(v.begin(), v.end()))
+        std::cout<<"Sorted!"<<std::endl;
 
     return 0;
 }
