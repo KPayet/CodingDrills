@@ -30,19 +30,18 @@ int main(int argc, char *argv[])
     for(int i=0; i<N; ++i)
         v.push_back(dis(gen));
 
+    std::vector<double> v1 = v; // so that I use the exact same inputs
+
     uint64_t startTime = GetTimeMs64();
-    std::sort(v.begin(), v.end());
+    std::sort(v1.begin(), v1.end());
     uint64_t endTime = GetTimeMs64();
     std::cout<<"std::sort: "<<N<<" "<<(endTime - startTime)<<std::endl;
 
-    if(std::is_sorted(v.begin(), v.end()))
+    if(std::is_sorted(v1.begin(), v1.end()))
         std::cout<<"Sorted!"<<std::endl;
 
     /// Now, my implementation
-    std::vector<double> v2;
-
-    for(int i=0; i<N; ++i)
-        v2.push_back(dis(gen));
+    std::vector<double> v2 = v; // so that I use the exact same inputs
 
     startTime = GetTimeMs64();
     Merge::sort(v2);
