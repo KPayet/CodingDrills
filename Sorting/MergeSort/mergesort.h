@@ -7,8 +7,9 @@
 // any purpose.
 //
 // UF.H
-// This header simply defines a sort function that can be used by including this header
-// That's all there is to see here....
+// This header simply implements a template sorting function, using mergesort algorithm
+// It can be used to sort any type that implements comparison operators
+// The algorithm implements a cutoff to insertion sort for arrays smaller than 10 items
 //
 // Author: Kevin Payet
 // ---------------------------------------------------------------------------
@@ -18,6 +19,8 @@
 namespace Merge{
 
 namespace {
+
+const int cutoffToInsertionSort = 10;
 
 template <typename T>
 void merge(std::vector<T> &a, std::vector<T> &aux, int lo, int mid, int hi){
@@ -43,10 +46,26 @@ void merge(std::vector<T> &a, std::vector<T> &aux, int lo, int mid, int hi){
     }
 }
 
+///
+/// Insertion sort implementation used for arrays smaller than a cutoff
+///
+template <typename T>
+void insertionSort(std::vector<T> &a, int lo, int hi){
+    for (int i = lo; i <= hi; ++i)
+        for (int j = i; j > lo && a[j] < a[j-1]; --j) {
+            T tmp = a[j];
+            a[j] = a[j-1];
+            a[j-1] = tmp;
+        }
+}
+
 template <typename T>
 void sort(std::vector<T> &a, std::vector<T> &aux, int lo, int hi){
 
-    if(hi <= lo) return; // an array of one element is already sorted
+    if(hi <= lo + cutoffToInsertionSort){ // for small arrays, we cut to insertion sort
+        insertionSort(a, lo, hi);
+        return;
+    }
 
     /// mergesort consists in splitting the array in two
     /// and recursively sort each part
