@@ -20,7 +20,7 @@ namespace Merge{
 
 namespace {
 
-const int cutoffToInsertionSort = 10;
+const int cutoffToInsertionSort = 7;
 
 template <typename T>
 void merge(std::vector<T> &a, std::vector<T> &aux, int lo, int mid, int hi){
@@ -84,8 +84,8 @@ void sort(std::vector<T> &a, std::vector<T> &aux, int lo, int hi){
 
 template <typename T>
 void sort(std::vector<T> &a) {
-    std::vector<T> aux(a.size(), 0);   // mergesort is not in place and requires an auxiliary array
-    sort(a, aux, 0, a.size()-1);    // does all the work, but stays in the shadows...
+    std::vector<T> aux = a;   // mergesort is not in place and requires an auxiliary array
+    sort(aux, a, 0, a.size()-1);    // does all the work, but stays in the shadows...
 }
 
 } // namespace Merge

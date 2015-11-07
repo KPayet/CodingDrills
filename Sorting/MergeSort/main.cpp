@@ -37,9 +37,8 @@ int main(int argc, char *argv[])
     uint64_t endTime = GetTimeMs64();
     std::cout<<"std::sort: "<<N<<" "<<(endTime - startTime)<<std::endl;
 
-    if(std::is_sorted(v1.begin(), v1.end()))
-        std::cout<<"Sorted!"<<std::endl;
-    for(int i=0; i<20; i++) std::cout<<v1[i]<<std::endl;
+    if(!std::is_sorted(v1.begin(), v1.end()))
+        std::cout<<"Not Sorted!!!!"<<std::endl;
 
     /// Now, my implementation
     std::vector<double> v2 = v; // so that I use the exact same inputs
@@ -49,8 +48,8 @@ int main(int argc, char *argv[])
     endTime = GetTimeMs64();
     std::cout<<"\nMerge::sort: "<<N<<" "<<(endTime - startTime)<<std::endl;
 
-    if(std::is_sorted(v2.begin(), v2.end()))
-        std::cout<<"Sorted!"<<std::endl;
-    for(int i=0; i<20; i++) std::cout<<v2[i]<<std::endl;
+    if(!std::is_sorted(v2.begin(), v2.end()))
+        std::cout<<"Not Sorted!"<<std::endl;
+    
     return 0;
 }
