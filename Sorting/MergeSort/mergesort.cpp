@@ -13,12 +13,12 @@ void merge(std::vector<int> &a, std::vector<int> &aux, int lo, int mid, int hi){
         aux[k] = a[k];
 
     /// now we copy-back to a, but in sorted order
-    /// Merging is simply comparing each element of the two subarrays with indexes i and j defined above
+    /// Merging is simply comparing each element of the two sub-arrays with indexes i and j defined above
     /// and copy the smallest on to the original array, while incrementing the corresponding index.
-    /// We simply need to be careful with the subarrays limit, i.e. watch out for when i>mid, or j>hi
+    /// We simply need to be careful with the sub-arrays limit, i.e. watch out for when i>mid, or j>hi
     for (int k = lo; k <= hi; k++){
         // taking care of limit cases
-        // basically, if we have already reached the limit of one subarray,
+        // basically, if we have already reached the limit of one sub-array,
         // we simply copy the rest of the other one to a.
         if (i > mid) a[k] = aux[j++];
         else if (j > hi ) a[k] = aux[i++];
@@ -41,7 +41,7 @@ void sort(std::vector<int> &a, std::vector<int> &aux, int lo, int hi){
     sort(a, aux, mid+1, hi);
 
     /// ...and Conquer
-    /// We merge the two sorted subarrays back together
+    /// We merge the two sorted sub-arrays back together
     merge(a, aux, lo, mid, hi);
 }
 }
