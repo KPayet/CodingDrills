@@ -28,9 +28,6 @@ void merge(std::vector<T> &aux, std::vector<T> &a, int lo, int mid, int hi){
     // We merge a[lo:mid] with a[mid+1:hi]
     int i = lo, j = mid+1;
 
-//    for (int k = lo; k <= hi; ++k)
-//        aux[k] = a[k];
-
     /// now we copy-back to a, but in sorted order
     /// Merging is simply comparing each element of the two sub-arrays with indexes i and j defined above
     /// and copy the smallest one to the original array, while incrementing the corresponding index.
@@ -59,6 +56,13 @@ void insertionSort(std::vector<T> &a, int lo, int hi){
         }
 }
 
+///
+/// Actual implementation of recursive mergesort
+/// Cuts to insertion sort for small sub-arrays
+/// Merge sort uses Divide & Conquer:
+/// We divide the array in two pieces, and recursively sort each piece
+/// The actual sorting is done by the merge function above
+///
 template <typename T>
 void sort(std::vector<T> &aux, std::vector<T> &a, int lo, int hi){
 
