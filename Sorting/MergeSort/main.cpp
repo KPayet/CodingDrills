@@ -51,5 +51,8 @@ int main(int argc, char *argv[])
     if(!std::is_sorted(v2.begin(), v2.end()))
         std::cout<<"Not Sorted!"<<std::endl;
     
+    if( v1 == v2 )
+	std::cout<<"Same result!"<<std::endl;
+    
     return 0;
 }
