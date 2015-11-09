@@ -47,11 +47,36 @@ void exch(std::vector<T> &a, int i, int j){
     a[j] = tmp;
 }
 
+///
+/// returns the index of median of a[i], a[j]and a[k]
+/// used in the computation of the pivot element for partitioning
+template <typename T>
+int medianOf3(std::vector<T> &a, int i, int j, int k) {
+    return (a[i] < a[j]) ?
+           ((a[j] < a[k]) ? j : ((a[i] < a[k]) ? k : i)) :
+           ((a[k] < a[j]) ? j : ((a[k] < a[i]) ? k : i));
+}
+
 /// Computes the pivot element for quicksort
 /// can be first element, median-of-3 approach or Tuckey's ninther
 template <typename T>
 T pivot(std::vector<T> &a, int lo, int hi){
-    return a[lo];
+
+    int arraySize = hi - lo + 1;
+
+    if (arraySize <= 40) { // for small arrays, use median of 3
+        int m = medianOf3(a, lo, lo + arraySize/2, hi);
+        return a[m];
+    }
+    else  {     // use Tukey ninther
+        int eps = arraySize/8;
+        int mid = lo + arraySize/2;
+        int median1 = medianOf3(a, lo, lo + eps, lo + eps + eps);
+        int median2 = medianOf3(a, mid - eps, mid, mid + eps);
+        int median3 = medianOf3(a, hi - eps - eps, hi - eps, hi);
+        int ninther = medianOf3(a, median1, median2, median3);
+        return a[ninther];
+    }
 }
 
 ///
@@ -78,7 +103,7 @@ void sort(std::vector<T> &a, int lo, int hi){
 
         if(x < v) exch(a, i++, lt++);
         else if(x > v) exch(a, i, gt--);
-        else i++;
+        else ++i;
     }
     /// done. Now all items == v are in place,
     /// all items smaller than v are in a[lo:lt-1]
@@ -93,7 +118,6 @@ void sort(std::vector<T> &a, int lo, int hi){
 
 template <typename T>
 void sort(std::vector<T> &a) {
-    std::random_shuffle(a.begin(), a.end());
     sort(a, 0, a.size()-1);    // does all the work, but stays in the shadows...
 }
 
