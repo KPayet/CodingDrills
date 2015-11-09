@@ -15,6 +15,7 @@
 // ---------------------------------------------------------------------------
 
 #include <vector>
+#include <algorithm>    // std::random_shuffle
 
 namespace Quick{
 
@@ -27,6 +28,9 @@ const int cutoffToInsertionSort = 7;
 ///
 template <typename T>
 void insertionSort(std::vector<T> &a, int lo, int hi){
+
+    if(hi <= lo) return;
+
     for (int i = lo; i <= hi; ++i)
         for (int j = i; j > lo && a[j] < a[j-1]; --j) {
             T tmp = a[j];
@@ -35,13 +39,26 @@ void insertionSort(std::vector<T> &a, int lo, int hi){
         }
 }
 
+/// swaps two values in vector a
 template <typename T>
-void partition(std::vector<T> &a, int lo, int hi, int p){
+void exch(std::vector<T> &a, int i, int j){
+    T tmp = a[i];
+    a[i] = a[j];
+    a[j] = tmp;
+}
 
+/// Computes the pivot element for quicksort
+/// can be first element, median-of-3 approach or Tuckey's ninther
+template <typename T>
+T pivot(std::vector<T> &a, int lo, int hi){
+    return a[lo];
 }
 
 ///
-///
+/// quicksort algorithm:
+/// Cutoff to insertion sort for small sub-arrays +
+/// 3-way partitioning +
+/// median-of-3 pivot
 template <typename T>
 void sort(std::vector<T> &a, int lo, int hi){
 
@@ -50,11 +67,33 @@ void sort(std::vector<T> &a, int lo, int hi){
         return;
     }
 
+    /// do 3-way partitioning
+
+    int lt = lo, gt = hi;
+    int i = lo;
+    int v = pivot(a, lo, hi);
+
+    while(i <= gt) {
+        T x = a[i];
+
+        if(x < v) exch(a, i++, lt++);
+        else if(x > v) exch(a, i, gt--);
+        else i++;
+    }
+    /// done. Now all items == v are in place,
+    /// all items smaller than v are in a[lo:lt-1]
+    /// and items greater than v are in a[gt+1:hi]
+
+    /// Simply to sort recursively
+
+    sort(a, lo, lt-1);
+    sort(a, gt+1, hi);
 }
 } // namespace
 
 template <typename T>
 void sort(std::vector<T> &a) {
+    std::random_shuffle(a.begin(), a.end());
     sort(a, 0, a.size()-1);    // does all the work, but stays in the shadows...
 }
 
