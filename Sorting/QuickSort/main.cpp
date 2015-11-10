@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 //    for(auto x: v)
 //        std::cout<<x<<std::endl;
 
-    int N = 100000;
+    int N = 1000;
     if(argc < 2)
         std::cout<<"Usage: ./main 500 \n Defaulting to 1000"<<std::endl;
     //else N = std::stoi(std::string(argv[1]));
