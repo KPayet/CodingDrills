@@ -15,7 +15,6 @@
 // ---------------------------------------------------------------------------
 
 #include <vector>
-#include <algorithm>    // std::random_shuffle
 
 namespace Quick{
 
@@ -41,7 +40,7 @@ void insertionSort(std::vector<T> &a, int lo, int hi){
 
 /// swaps two values in vector a
 template <typename T>
-void exch(std::vector<T> &a, int i, int j){
+inline void exch(std::vector<T> &a, int i, int j){
     T tmp = a[i];
     a[i] = a[j];
     a[j] = tmp;
@@ -51,7 +50,7 @@ void exch(std::vector<T> &a, int i, int j){
 /// returns the index of median of a[i], a[j]and a[k]
 /// used in the computation of the pivot element for partitioning
 template <typename T>
-int medianOf3(std::vector<T> &a, int i, int j, int k) {
+inline int medianOf3(std::vector<T> &a, int i, int j, int k) {
     return (a[i] < a[j]) ?
            ((a[j] < a[k]) ? j : ((a[i] < a[k]) ? k : i)) :
            ((a[k] < a[j]) ? j : ((a[k] < a[i]) ? k : i));
