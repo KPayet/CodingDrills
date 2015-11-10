@@ -80,11 +80,10 @@ T pivot(std::vector<T> &a, int lo, int hi){
     }
 }
 
-///
 /// quicksort algorithm:
 /// Cutoff to insertion sort for small sub-arrays +
 /// 3-way partitioning +
-/// median-of-3 pivot
+/// median-of-3 pivot or Tukey's ninther
 template <typename T>
 void sort(std::vector<T> &a, int lo, int hi){
 
@@ -95,6 +94,7 @@ void sort(std::vector<T> &a, int lo, int hi){
 
     // Bentley-McIlroy 3-way partitioning
     // It gives a whole ~40% improvement in time performance !!!
+    // See http://www.sorting-algorithms.com/static/QuicksortIsOptimal.pdf, page 9
         int i = lo, j = hi+1;
         int p = lo, q = hi+1;
         T v = a[lo];
