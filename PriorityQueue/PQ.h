@@ -13,6 +13,28 @@
 // Author: Kevin Payet
 // ---------------------------------------------------------------------------
 
+class PQ {
 
+public:
+
+    /// Constructors + Destructor
+    PQ() {}
+    PQ(int maxN) {}
+
+    ~PQ() {}
+
+    /// Functions that access data/ modify data structure
+
+    void enqueue(int data);
+    /// returns and remove min/max element from the queue
+    int dequeue();
+    int peek(); // just returns min/max element without
+
+    /// diagnostics
+
+    int size();
+    bool isEmpty();
+
+};
 
 #endif // PQ_H
