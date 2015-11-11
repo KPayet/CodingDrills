@@ -16,10 +16,10 @@ int main(int argc, char *argv[])
 //    for(auto x: v)
 //        std::cout<<x<<std::endl;
 
-    int N = 1000;
+    int N = 1000000;
     if(argc < 2)
         std::cout<<"Usage: ./main 500 \n Defaulting to 1000"<<std::endl;
-    else N = std::stoi(std::string(argv[1]));
+    //else N = std::stoi(std::string(argv[1]));
 
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     std::vector<double> v2 = v; // so that I use the exact same inputs
 
     startTime = GetTimeMs64();
-    Quick::sort(v2);
+    Quick::sort(v2, true);
     endTime = GetTimeMs64();
     std::cout<<"\nQuick::sort: "<<N<<" "<<(endTime - startTime)<<std::endl;
 
