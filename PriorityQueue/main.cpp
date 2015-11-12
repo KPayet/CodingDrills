@@ -1,4 +1,5 @@
 #include <iostream>
+#include "PQ.h"
 
 int main(int argc, char *argv[])
 {
