@@ -9,14 +9,17 @@ int main(int argc, char *argv[])
 
     PQ *pq = new PQ(10);
 
-    cout<<pq->size()<<endl;
+    //cout<<pq->size()<<endl;
 
-    std::vector<int> v{1,2,3,4,5,6,7,8,9};
+    std::vector<int> v{1,2,3,4,5,6,12,54,21,1,1,56,8,10,10,8,100,6};
 
-    pq->enqueue(2);
-    cout<<pq->size()<<endl;
-    cout<<pq->dequeue()<<endl;
-    cout<<pq->size()<<endl;
+    for(auto x: v) {
+        pq->enqueue(x);
+    }
+
+    while(!pq->isEmpty()) {
+        cout<<pq->dequeue()<<endl;
+    }
 
     return 0;
 }

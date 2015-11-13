@@ -18,6 +18,7 @@
 // ---------------------------------------------------------------------------
 
 #include <vector>
+#include <iostream>
 
 class PQ {
 
@@ -47,8 +48,19 @@ public:
         pq.erase(pq.begin() + N);
         return item;
     }
+
     int peek(){ // just returns min/max element without
         return pq[0];
+    }
+
+    /// for testing
+
+    void printAll(){
+        std::cout<<"Size = "<<size()<<std::endl;
+        for(auto x: pq) {
+            std::cout<<x;
+        }
+        std::cout<<std::endl;
     }
 
     /// diagnostics
@@ -87,10 +99,10 @@ private:
     }
 
     void sink(int i){
-        while (2*i+1 <= N)
+        while (2*i+1 <= N-1)
         {
             int j = 2*i+1; // in a binary heap, children of i are in indexes 2*i+1 and 2*i+2
-            if (j < N && pq[j] < pq[j+1]) j++; // select largest of two children
+            if (j < N-1 && pq[j] < pq[j+1]) j++; // select largest of two children
             if (pq[i] > pq[j]) break;   // if pq[i] is larger than the largest child, then it's all good
             exch(i, j);
             i = j;
