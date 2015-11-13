@@ -24,13 +24,10 @@ class PQ {
 public:
 
     /// Constructors + Destructor
-    PQ() {
-        pq.push_back(0);
-        N = 0;
-    }
+    PQ(): N(0) {}
+
     PQ(int maxN){
-        pq.reserve(maxN+1);
-        pq.push_back(0);
+        pq.reserve(maxN);
         N = 0;
     }
 
@@ -40,18 +37,18 @@ public:
 
     void enqueue(int data){
         pq.push_back(data);
-        swim(++N);
+        swim(N++);
     }
     /// returns and remove min/max element from the queue
     int dequeue(){
-        int item = pq[1]; // min or max depending on the type of queue
-        exch(1, N--);
-        sink(1);
-        pq.erase(pq.begin() + (N+1));
+        int item = pq[0]; // min or max depending on the type of queue
+        exch(0, --N);
+        sink(0);
+        pq.erase(pq.begin() + N);
         return item;
     }
     int peek(){ // just returns min/max element without
-        return pq[1];
+        return pq[0];
     }
 
     /// diagnostics
@@ -81,16 +78,18 @@ private:
     void swim(int i){
         // while heap property is not satisfied between i and its parent,
         // swap both elements
-        while(i > 1 && pq[i] > pq[i/2]){
-            exch(i, i/2);
-            i = i/2;
+        int p = i%2 == 0 ? i/2-1 : i/2;
+        while(i > 0 && pq[i] > pq[p]){
+            exch(i, p);
+            i = p ;
+            p = i%2 == 0 ? i/2-1 : i/2;
         }
     }
 
     void sink(int i){
-        while (2*i <= N)
+        while (2*i+1 <= N)
         {
-            int j = 2*i; // in a binary heap, children of i are in indexes 2*i and 2*i+1
+            int j = 2*i+1; // in a binary heap, children of i are in indexes 2*i+1 and 2*i+2
             if (j < N && pq[j] < pq[j+1]) j++; // select largest of two children
             if (pq[i] > pq[j]) break;   // if pq[i] is larger than the largest child, then it's all good
             exch(i, j);
