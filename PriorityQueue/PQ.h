@@ -18,7 +18,6 @@
 // ---------------------------------------------------------------------------
 
 #include <vector>
-#include <iostream>
 
 ///
 /// Declaration of generic template priority queue class
