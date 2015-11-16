@@ -6,7 +6,7 @@
 // support, and with no warranty, express or implied, as to its usefulness for
 // any purpose.
 //
-// UF.H
+// mergesort.H
 // This header simply implements a template sorting function, using mergesort algorithm
 // It can be used to sort any type that implements comparison operators
 // The algorithm implements a cutoff to insertion sort for arrays smaller than 7 items
