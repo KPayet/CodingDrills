@@ -31,9 +31,9 @@ namespace {
 
 template <typename T>
 void exch(std::vector<T> &a, int i, int j) {
-    T tmp = a[i-1];
-    a[i-1] = a[j-1];
-    a[j-1] = tmp;
+    T tmp = a[i];
+    a[i] = a[j];
+    a[j] = tmp;
 }
 
 template <typename T>
@@ -42,7 +42,7 @@ void sink(std::vector<T> &a, int i, int N) {
         int j = 2*i;
         if (j < N && a[j-1] < a[j]) j++;
         if (a[i-1] > a[j-1]) break;
-        exch(a, i, j);
+        exch(a, i-1, j-1);
         i = j;
     }
 }
@@ -55,7 +55,7 @@ void sort(std::vector<T> &a) {
     for (int k = N/2; k >= 1; k--)
         sink(a, k, N);
     while (N > 1) {
-        exch(a, 1, N--);
+        exch(a, 0, --N);
         sink(a, 1, N);
     }
 }
