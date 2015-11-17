@@ -24,24 +24,25 @@
 //  code size matters, e.g. embedded system
 
 #include <vector>
+#include <iostream>
 
 namespace Heap{
 
 namespace {
 
 template <typename T>
-void exch(std::vector<T> &a, int i, int j){
+void exch(std::vector<T> &a, int i, int j) {
     T tmp = a[i-1];
     a[i-1] = a[j-1];
     a[j-1] = tmp;
 }
 
 template <typename T>
-void sink (std::vector<T> &a, int i, int N){
+void sink(std::vector<T> &a, int i, int N) {
     while (2*i <= N) {
         int j = 2*i;
         if (j < N && a[j-1] < a[j]) j++;
-        if (a[i-1] < a[j-1]) break;
+        if (a[i-1] > a[j-1]) break;
         exch(a, i, j);
         i = j;
     }
@@ -51,15 +52,10 @@ void sink (std::vector<T> &a, int i, int N){
 
 template <typename T>
 void sort(std::vector<T> &a) {
-    /// first step of heapsort is heap ordering the array
-    /// This is as simple as:
     int N = a.size();
-    for(int k = N/2; k >= 1; --k) {
+    for (int k = N/2; k >= 1; k--)
         sink(a, k, N);
-    } // heap ordering over
-
-    /// The next is to put the elements in place
-    while(N > 1){
+    while (N > 1) {
         exch(a, 1, N--);
         sink(a, 1, N);
     }
