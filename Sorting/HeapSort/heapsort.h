@@ -24,7 +24,6 @@
 //  code size matters, e.g. embedded system
 
 #include <vector>
-#include <iostream>
 
 namespace Heap{
 
