@@ -38,11 +38,18 @@ void exch(std::vector<T> &a, int i, int j) {
 
 template <typename T>
 void sink(std::vector<T> &a, int i, int N) {
-    while (2*i <= N) {
-        int j = 2*i;
-        if (j < N && a[j-1] < a[j]) j++;
-        if (a[i-1] > a[j-1]) break;
-        exch(a, i-1, j-1);
+    ///
+    /// In HeapSort, the binary heap is a Max heap, meaning that the children are smaller than their parent.
+    /// To sort, we simply to the same operation as dequeue:
+    ///     i - swap first element (largest) with the last one
+    ///    ii - sink the new first element
+    /// This way, by iteratively putting the max element last in the array, we end up with a sorted array.
+    ///
+    while (2*i+1 <= N-1) {
+        int j = 2*i+1;
+        if (j < N-1 && a[j] < a[j+1]) j++;
+        if (a[i] > a[j]) break;
+        exch(a, i, j);
         i = j;
     }
 }
@@ -52,11 +59,11 @@ void sink(std::vector<T> &a, int i, int N) {
 template <typename T>
 void sort(std::vector<T> &a) {
     int N = a.size();
-    for (int k = N/2; k >= 1; k--)
+    for (int k = N/2; k >= 0; k--)
         sink(a, k, N);
     while (N > 1) {
         exch(a, 0, --N);
-        sink(a, 1, N);
+        sink(a, 0, N);
     }
 }
 

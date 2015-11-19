@@ -6,14 +6,14 @@
 
 int main(int argc, char *argv[])
 {
-    const int N = 10;
+    const int N = 100;
 
     ///
     /// Generate random input vector
     ///
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dis(0, 100);
+    std::uniform_real_distribution<> dis(0, 1000);
 
     std::vector<double> v;
     for(int i=0; i<N; ++i)
