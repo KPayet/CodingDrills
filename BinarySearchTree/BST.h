@@ -23,14 +23,27 @@ public:
     BST():N(0) {}
 
     /// Insert, retrieve, delete key-value pairs
-    void put(const Key &key, Item value);
-    Item get(const Key &key);
+    void put(const Key &key, Item value) {
+        /// insert new node, and update the tree structure recursively
+        root = put(root, key, value);
+    }
+    /// I decided to make get return a reference to the value,
+    /// so that user can do test like: if(!get(someKey)) { ... }
+    /// Otherwise I don't really know how to deal with the case when the key is not present in the tree
+    Item *get(const Key &key) {
+        NodePtr x = get(root, key);
+        if(!x) return nullptr;
+        return x->value;
+    }
     void remove(const Key &key);
 
     /// Describe current state of the tree
-    bool contains(const Key &key);
-    int size();
-    bool isEmpty();
+    bool contains(const Key &key){
+        if(!get(key)) return false;
+        return true;
+    }
+    int size() {return N;}
+    bool isEmpty() {return N == 0;}
 
     /// return all keys. Implement inorder DFS, BFS, ... ?
 
@@ -54,6 +67,18 @@ private:
         }
     };
 
+    /// helper functions for put and get implementations
+    NodePtr put(NodePtr x, const Key &key, Item value);
+    NodePtr get(NodePtr x, const Key &key);
+
 };
+
+template <typename Key, typename Item>
+typename BST<Key, Item>::NodePtr BST<Key, Item>::put(NodePtr x, const Key &key, Item value) {
+    if(!x) return std::shared_ptr<Node>(new Node(key, value));
+}
+
+template <typename Key, typename Item>
+typename BST<Key, Item>::NodePtr BST<Key, Item>::get(NodePtr x, const Key &key) {}
 
 #endif // BST_H
