@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
 
 
     tree->remove(3);
+    if(tree->contains(3)) cout<<"Contains 3"<<endl;
     if(tree->contains(1)) cout<<"Contains 1"<<endl;
     if(tree->contains(2)) cout<<"Contains 2"<<endl;
 

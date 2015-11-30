@@ -38,7 +38,11 @@ public:
         if(!x) return nullptr;
         return &(x->value);
     }
-    void remove(const Key &key);
+    /// This function removes a key from the tree,
+    /// and recursively update the tree structure
+    void remove(const Key &key) {
+        root = remove(root, key);
+    }
 
     /// Describe current state of the tree
     bool contains(const Key &key){
@@ -72,7 +76,22 @@ private:
     NodePtr put(NodePtr x, const Key &key, Item value);
     NodePtr get(NodePtr x, const Key &key);
 
+    /// helpers for remove key
+    NodePtr remove(NodePtr node, const Key &key);
+    // returns Node with minimum key in subtree with root x
+    NodePtr min(NodePtr x) {
+        if (!x->left) return x;
+        else return min(x->left);
+    }
+    NodePtr deleteMin(NodePtr x) {
+        if (!x->left) return x->right;
+        x->left = deleteMin(x->left);
+
+        return x;
+    }
+
 };
+
 
 /// recursive implementation of put function
 template <typename Key, typename Item>
@@ -116,46 +135,24 @@ typename BST<Key, Item>::NodePtr BST<Key, Item>::get(NodePtr node, const Key &ke
 ///           i.e. this data structure is not the best way to implement an efficient associative array
 ///
 template <typename Key, typename Item>
-void BST<Key, Item>::remove(const Key &key) {
+typename BST<Key, Item>::NodePtr BST<Key, Item>::remove(NodePtr node, const Key &k) {
+    // limit condition. Means that we didn't find a Node with key k. So do nothing Case #1
+    if(!node) return nullptr;
 
-    if(isEmpty()) return;
-
-    if(N == 1) { root = nullptr; return;}
-
-    NodePtr nodeParent;
-    NodePtr node = root;
-
-    while(node) {
-        if(key == node->key) break;
-
-        nodeParent = node;
-
-        if(key < node->key) node = node->left;
-        else if(key > node->key) node = node->right;
+    // first we recursively search for the Node with key k
+    if(key < node->key) node->left  = remove(node->left,  key);
+    else if(key > node->key) node->right = remove(node->right, key);
+    else {  // Node with key k found!
+        if(!node->right) return node->left;
+        if(!node->left) return node->right;
+        std::cout<<"Two children!"<<std::endl;
+        NodePtr x = node;
+        node = min(x->right);   // swap node with smallest Node in its right subtree
+        node->right = deleteMin(x->right);
+        node->left = x->left;
     }
 
-    if(!node) return;   // case #1
-
-    if(!(node->left || node->right)) {  // case #2
-        nodeParent->left = nullptr;
-        nodeParent->right = nullptr;
-        --N;
-        return;
-    } else if(!(node->left && node->right)) {   // case #3
-        if(node == nodeParent->right) {
-            if(node->left) nodeParent->right = node->left;
-            else nodeParent->right = node->right;
-        }
-        else {
-            if(node->left) nodeParent->left = node->left;
-            else nodeParent->left = node->right;
-        }
-        --N;
-        return;
-    }
-    else {
-        std::cout<<"Two children"<<std::endl;
-    }
-
+    return node;
 }
+
 #endif // BST_H
