@@ -20,15 +20,9 @@ int main(int argc, char *argv[])
     tree->put(2, 2);
     tree->put(10, 10);
 
-    cout<<tree->size()<<endl;
-
-    cout<<"min = "<<*(tree->getMin())<<" max = "<<*(tree->getMax())<<endl;
-
-    tree->remove(10);
-    tree->remove(9);
-
-    cout<<"min = "<<*(tree->getMin())<<" max = "<<*(tree->getMax())<<endl;
-
+    auto v = *(tree->keys());
+    for(auto k: v)
+        cout<<k<<endl;
 
     return 0;
 }

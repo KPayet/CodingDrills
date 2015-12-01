@@ -15,6 +15,7 @@
 // ---------------------------------------------------------------------------
 
 #include <memory>
+#include <vector>
 #include <iostream>
 
 template <class Key, class Item>
@@ -47,6 +48,7 @@ public:
     }
 
     /// Describe current state of the tree
+
     bool contains(const Key &key){
         if(!get(key)) return false;
         return true;
@@ -67,13 +69,21 @@ public:
         return &(x->value);
     }
 
-    /// return all keys. Implement inorder DFS, BFS, ... ?
+    /// return all keys in order. I chose to use a vector<Key> to store the keys
+    /// Could have been a queue<Key>. But in both cases, you can use for(auto k: *(tree->keys()) ) { ... }
+    /// and the vector allows to access 2nd smallest, 3rd smallest, ..., keys
 
+    std::vector<Key> *keys() {
+        std::vector<Key> *v = new std::vector<Key>();
+        inorder(root, v); // collects key in order
+
+        return v;
+    }
 
 private:
-    /// a BST is defined merely by a reference to the root Node
+
     int N;  // number of nodes
-    NodePtr root;
+    NodePtr root; // a BST is defined merely by a reference to the root Node
 
     class Node{
         friend class BST<Key, Item>;
@@ -99,6 +109,7 @@ private:
         if (!x->left) return x;
         else return min(x->left);
     }
+
     NodePtr removeMinNode(NodePtr x) {
         if (!x->left) return x->right;
         x->left = removeMinNode(x->left);
@@ -112,6 +123,9 @@ private:
         else return max(x->right);
     }
 
+     /// traversal functions. For now, I only have inorder
+
+    void inorder(NodePtr node, std::vector<Key> *v);
 
 };
 
@@ -176,6 +190,16 @@ typename BST<Key, Item>::NodePtr BST<Key, Item>::remove(NodePtr node, const Key 
     }
 
     return node;
+}
+
+template <typename Key, typename Item>
+void BST<Key, Item>::inorder(NodePtr node, std::vector<Key> *v) {
+
+    if(!node) return;
+
+    inorder(node->left, v);
+    v->push_back(node->key);
+    inorder(node->right, v);
 }
 
 #endif // BST_H
