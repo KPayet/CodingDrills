@@ -30,6 +30,7 @@ public:
         /// insert new node, and update the tree structure recursively
         root = put(root, key, value);
     }
+
     /// I decided to make get return a reference to the value,
     /// so that user can do test like: if(!get(someKey)) { ... }
     /// Otherwise I don't really know how to deal with the case when the key is not present in the tree
@@ -38,6 +39,7 @@ public:
         if(!x) return nullptr;
         return &(x->value);
     }
+
     /// This function removes a key from the tree,
     /// and recursively update the tree structure
     void remove(const Key &key) {
@@ -51,6 +53,19 @@ public:
     }
     int size() {return N;}
     bool isEmpty() {return N == 0;}
+
+    /// return a pointer to the data associated with the min and max keys in the tree
+    Item *getMin() {
+        NodePtr x = min(root);
+        if(!x) return nullptr;
+        return &(x->value);
+    }
+
+    Item *getMax() {
+        NodePtr x = max(root);
+        if(!x) return nullptr;
+        return &(x->value);
+    }
 
     /// return all keys. Implement inorder DFS, BFS, ... ?
 
@@ -78,17 +93,25 @@ private:
 
     /// helpers for remove key
     NodePtr remove(NodePtr node, const Key &key);
+
     // returns Node with minimum key in subtree with root x
     NodePtr min(NodePtr x) {
         if (!x->left) return x;
         else return min(x->left);
     }
-    NodePtr deleteMin(NodePtr x) {
+    NodePtr removeMinNode(NodePtr x) {
         if (!x->left) return x->right;
-        x->left = deleteMin(x->left);
+        x->left = removeMinNode(x->left);
 
         return x;
     }
+
+    // returns Node with max key
+    NodePtr max(NodePtr x) {
+        if (!x->right) return x;
+        else return max(x->right);
+    }
+
 
 };
 
@@ -99,7 +122,7 @@ typename BST<Key, Item>::NodePtr BST<Key, Item>::put(NodePtr node, const Key &ke
 
     /// if we reach nullptr, it means that the key doesn't exist in the tree
     /// So, we create a new Node, update Node number, and return
-    if(!node) { ++N; return std::shared_ptr<Node>(new Node(key, value)); }
+    if(!node) { ++N; return NodePtr(new Node(key, value)); }
 
     /// if input key is smaller than current key, add (key, value) pair in left subtree
     /// if it is greater, in right subtree. If it is equal, then the key already exists, and we simply update the value
@@ -140,15 +163,15 @@ typename BST<Key, Item>::NodePtr BST<Key, Item>::remove(NodePtr node, const Key 
     if(!node) return nullptr;
 
     // first we recursively search for the Node with key k
-    if(key < node->key) node->left  = remove(node->left,  key);
-    else if(key > node->key) node->right = remove(node->right, key);
+    if(k < node->key) node->left  = remove(node->left,  k);
+    else if(k > node->key) node->right = remove(node->right, k);
     else {  // Node with key k found!
         if(!node->right) return node->left;
         if(!node->left) return node->right;
-        std::cout<<"Two children!"<<std::endl;
+        // Case #4 below
         NodePtr x = node;
         node = min(x->right);   // swap node with smallest Node in its right subtree
-        node->right = deleteMin(x->right);
+        node->right = removeMinNode(x->right);
         node->left = x->left;
     }
 

@@ -22,15 +22,12 @@ int main(int argc, char *argv[])
 
     cout<<tree->size()<<endl;
 
-    if(tree->contains(1)) cout<<"Contains 1"<<endl;
-    if(tree->contains(2)) cout<<"Contains 2"<<endl;
+    cout<<"min = "<<*(tree->getMin())<<" max = "<<*(tree->getMax())<<endl;
 
+    tree->remove(10);
+    tree->remove(9);
 
-    tree->remove(3);
-    if(tree->contains(3)) cout<<"Contains 3"<<endl;
-    if(tree->contains(1)) cout<<"Contains 1"<<endl;
-    if(tree->contains(2)) cout<<"Contains 2"<<endl;
-
+    cout<<"min = "<<*(tree->getMin())<<" max = "<<*(tree->getMax())<<endl;
 
 
     return 0;
