@@ -73,8 +73,8 @@ public:
     /// Could have been a queue<Key>. But in both cases, you can use for(auto k: *(tree->keys()) ) { ... }
     /// and the vector allows to access 2nd smallest, 3rd smallest, ..., keys
 
-    std::vector<Key> *keys() {
-        std::vector<Key> *v = new std::vector<Key>();
+    std::shared_ptr<std::vector<Key>> keys() {
+        std::shared_ptr<std::vector<Key>> v(new std::vector<Key>());
         inorder(root, v); // collects key in order
 
         return v;
@@ -125,7 +125,7 @@ private:
 
      /// traversal functions. For now, I only have inorder
 
-    void inorder(NodePtr node, std::vector<Key> *v);
+    void inorder(NodePtr node, std::shared_ptr<std::vector<Key>> v);
 
 };
 
@@ -193,7 +193,7 @@ typename BST<Key, Item>::NodePtr BST<Key, Item>::remove(NodePtr node, const Key 
 }
 
 template <typename Key, typename Item>
-void BST<Key, Item>::inorder(NodePtr node, std::vector<Key> *v) {
+void BST<Key, Item>::inorder(NodePtr node, std::shared_ptr<std::vector<Key>> v) {
 
     if(!node) return;
 
