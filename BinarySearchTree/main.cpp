@@ -24,5 +24,7 @@ int main(int argc, char *argv[])
     for(auto k: v)
         cout<<k<<endl;
 
+    delete tree;
+
     return 0;
 }

@@ -72,6 +72,8 @@ public:
     /// return all keys in order. I chose to use a vector<Key> to store the keys
     /// Could have been a queue<Key>. But in both cases, you can use for(auto k: *(tree->keys()) ) { ... }
     /// and the vector allows to access 2nd smallest, 3rd smallest, ..., keys
+    ///
+    /// auto v = *(tree->keys()); // and v is your Keys vector
 
     std::shared_ptr<std::vector<Key>> keys() {
         std::shared_ptr<std::vector<Key>> v(new std::vector<Key>());
