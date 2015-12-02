@@ -9,18 +9,18 @@ int main(int argc, char *argv[])
 
     BST<int, int> *tree = new BST<int, int>();
 
-    tree->put(8, 8);
-    tree->put(5, 5);
-    tree->put(9, 9);
-    tree->put(3, 3);
-    tree->put(6, 6);
-    tree->put(7, 7);
-    tree->put(1, 1);
-    tree->put(4, 4);
-    tree->put(2, 2);
-    tree->put(10, 10);
+    tree->put(8, 18);
+    tree->put(5, 15);
+    tree->put(9, 19);
+    tree->put(3, 13);
+    tree->put(6, 16);
+    tree->put(7, 17);
+    tree->put(1, 11);
+    tree->put(4, 14);
+    tree->put(2, 12);
+    tree->put(10, 110);
 
-    auto v = *(tree->keys());
+    auto v = *(tree->items());
     for(auto k: v)
         cout<<k<<endl;
 

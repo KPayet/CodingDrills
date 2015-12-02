@@ -16,6 +16,8 @@
 
 #include <memory>
 #include <vector>
+#include <type_traits>
+
 #include <iostream>
 
 template <class Key, class Item>
@@ -76,8 +78,18 @@ public:
     /// auto v = *(tree->keys()); // and v is your Keys vector
 
     std::shared_ptr<std::vector<Key>> keys() {
+
         std::shared_ptr<std::vector<Key>> v(new std::vector<Key>());
-        inorder(root, v); // collects key in order
+        inorder<false>(root, v); // collects key in order
+
+        return v;
+    }
+
+    /// return all items in order (in Keys order)
+    std::shared_ptr<std::vector<Item>> items() {
+
+        std::shared_ptr<std::vector<Item>> v(new std::vector<Item>());
+        inorder<true>(root, v); // collects key in order
 
         return v;
     }
@@ -127,7 +139,10 @@ private:
 
      /// traversal functions. For now, I only have inorder
 
-    void inorder(NodePtr node, std::shared_ptr<std::vector<Key>> v);
+    /// The function is defined as a template over a boolean isItem, so that I can use it for both keys() and items() methods,
+    /// that return different types (vector<Key> vs vector<Item>). This is just not to have to rewrite an almost identical inorder method.
+    template <bool isItem>
+    void inorder( NodePtr node, std::shared_ptr< std::vector< typename std::conditional<isItem, Item, Key>::type > > v );
 
 };
 
@@ -194,14 +209,14 @@ typename BST<Key, Item>::NodePtr BST<Key, Item>::remove(NodePtr node, const Key 
     return node;
 }
 
-template <typename Key, typename Item>
-void BST<Key, Item>::inorder(NodePtr node, std::shared_ptr<std::vector<Key>> v) {
+template <typename Key, typename Item> template <bool isItem>
+void BST<Key, Item>::inorder( NodePtr node, std::shared_ptr< std::vector< typename std::conditional<isItem, Item, Key>::type > > v) {
 
     if(!node) return;
 
-    inorder(node->left, v);
-    v->push_back(node->key);
-    inorder(node->right, v);
+    inorder<isItem>(node->left, v);
+    v->push_back(isItem ? node->value : node->key); // if called from items() method, push_back the payload. Else push_back key
+    inorder<isItem>(node->right, v);
 }
 
 #endif // BST_H
