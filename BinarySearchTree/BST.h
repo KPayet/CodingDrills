@@ -7,9 +7,12 @@
 // any purpose.
 //
 // BST.H
-//  This file declares a template class for a key-value data structure based on BST
+//  This file declares a template class that describes a key-value pair data structure based on BST
 //  The current implementation is an associative array, i.e. it doesn't allow duplicate keys
 //  However, values associated with the keys can be updated
+//
+//  It supports basic operations: put, get, remove, contains, isEmpty
+//  + ordered operations getMin and getMax (return Item data associated with min/max key)
 //
 // Author: Kevin Payet
 // ---------------------------------------------------------------------------
@@ -22,40 +25,49 @@
 
 template <class Key, class Item>
 class BST {
+
     class Node;
-    typedef std::shared_ptr<Node> NodePtr;
+    typedef std::shared_ptr<Node> NodePtr;  // used for clarity + ease of memory management
 
 public:
-    BST():N(0) {}
 
+    BST():N(0) {}   // the root NodePtr is set to nullptr automatically
+
+    ///
     /// Insert, retrieve, delete key-value pairs
-    void put(const Key &key, Item value) {
+    ///
+
+    void put(const Key &key, Item value) { //   insert
         /// insert new node, and update the tree structure recursively
-        root = put(root, key, value);
+        root = put(root, key, value);   //  defined in private methods
     }
 
-    /// I decided to make get return a reference to the value,
+    /// I decided to make get return by address,
     /// so that user can do test like: if(!get(someKey)) { ... }
     /// Otherwise I don't really know how to deal with the case when the key is not present in the tree
-    Item *get(const Key &key) {
-        NodePtr x = get(root, key);
+    Item *get(const Key &key) { //  retrieve
+        NodePtr x = get(root, key); //  defined in private methods
         if(!x) return nullptr;
-        return &(x->value);
+        return &(x->value); //  I don't find this really elegant, but I can't think of another way right now
     }
 
     /// This function removes a key from the tree,
     /// and recursively update the tree structure
-    void remove(const Key &key) {
-        root = remove(root, key);
+    void remove(const Key &key) {   //  delete
+        root = remove(root, key);   //  defined in private methods
     }
 
+    ///
     /// Describe current state of the tree
+    ///
 
     bool contains(const Key &key){
         if(!get(key)) return false;
         return true;
     }
+
     int size() {return N;}
+
     bool isEmpty() {return N == 0;}
 
     /// return a pointer to the data associated with the min and max keys in the tree
@@ -80,7 +92,7 @@ public:
     std::shared_ptr<std::vector<Key>> keys() {
 
         std::shared_ptr<std::vector<Key>> v(new std::vector<Key>());
-        inorder<false>(root, v); // collects key in order
+        inorder<false>(root, v);    //  collects keys or items in order. See definition below
 
         return v;
     }
@@ -89,20 +101,20 @@ public:
     std::shared_ptr<std::vector<Item>> items() {
 
         std::shared_ptr<std::vector<Item>> v(new std::vector<Item>());
-        inorder<true>(root, v); // collects key in order
+        inorder<true>(root, v); // collects keys or items in order. See definition below
 
         return v;
     }
 
 private:
 
-    int N;  // number of nodes
+    int N;  // number of nodes - for size() and isEmpty() methods
     NodePtr root; // a BST is defined merely by a reference to the root Node
 
     class Node{
         friend class BST<Key, Item>;
 
-        const Key key;
+        const Key key;  //  it is good practice to make the key immutable
         Item value;
         NodePtr left, right;
 
@@ -118,6 +130,12 @@ private:
     /// helpers for remove key
     NodePtr remove(NodePtr node, const Key &key);
 
+    // returns Node with max key
+    NodePtr max(NodePtr x) {
+        if (!x->right) return x;
+        else return max(x->right);
+    }
+
     // returns Node with minimum key in subtree with root x
     NodePtr min(NodePtr x) {
         if (!x->left) return x;
@@ -131,13 +149,7 @@ private:
         return x;
     }
 
-    // returns Node with max key
-    NodePtr max(NodePtr x) {
-        if (!x->right) return x;
-        else return max(x->right);
-    }
-
-     /// traversal functions. For now, I only have inorder
+    /// traversal functions. For now, I only have inorder
 
     /// The function is defined as a template over a boolean isItem, so that I can use it for both keys() and items() methods,
     /// that return different types (vector<Key> vs vector<Item>). This is just not to have to rewrite an almost identical inorder method.
@@ -171,7 +183,7 @@ typename BST<Key, Item>::NodePtr BST<Key, Item>::get(NodePtr node, const Key &ke
     // if we reach a leaf, it means the key has not been found. So we return null
     if(!node) return nullptr;
 
-    //
+    //  self-explanatory
     if(key < node->key) return get(node->left, key);
     else if(key > node->key) return get(node->right, key);
     else return node;
@@ -190,6 +202,7 @@ typename BST<Key, Item>::NodePtr BST<Key, Item>::get(NodePtr node, const Key &ke
 ///
 template <typename Key, typename Item>
 typename BST<Key, Item>::NodePtr BST<Key, Item>::remove(NodePtr node, const Key &k) {
+
     // limit condition. Means that we didn't find a Node with key k. So do nothing Case #1
     if(!node) return nullptr;
 
@@ -209,6 +222,7 @@ typename BST<Key, Item>::NodePtr BST<Key, Item>::remove(NodePtr node, const Key 
     return node;
 }
 
+/// recursive implementation of In-order traversal for a BST. Pretty obvious
 template <typename Key, typename Item> template <bool isItem>
 void BST<Key, Item>::inorder( NodePtr node, std::shared_ptr< std::vector< typename std::conditional<isItem, Item, Key>::type > > v) {
 
