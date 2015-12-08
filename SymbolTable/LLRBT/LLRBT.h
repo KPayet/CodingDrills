@@ -12,7 +12,7 @@
 //  The implementation is pretty close to that of BST.h, but it also introduces the concept of color
 //  that allows to balance the Binary Search Tree, i.e. keep its maximum height to a minimum value (logN).
 //  Since, in a BST, complexity is dictated by the maximum depth (height of tree), such structure allows to guarantee O(logN) performance.
-//  In fact, LLRB-BST data structure is a different representation of 2-3 tree (see https://en.wikipedia.org/wiki/2%E2%80%933_tree).
+//  In fact, LLRB-BST data structure (as implemented here) emulates a 2-3 tree (see https://en.wikipedia.org/wiki/2%E2%80%933_tree).
 //  2-3 tree are self-balancing trees that are perfect to implement ordered symbol tables with high performances (low complexity).
 //  But the implementation can be a little tricky.
 //  LLRB-BST solves this problem by representing 3-nodes (see wikipedia description) by simple nodes connected through a RED edge.
@@ -22,9 +22,247 @@
 //
 //  It supports basic operations: put, get, remove, contains, isEmpty
 //  + ordered operations getMin and getMax (return Item data associated with min/max key)
+//  Other operations such as floor, ceiling, rank ... can be implemented too, but I didn't do it for now,
+//  because my goal was more the core associative array structure
 //
 // Author: Kevin Payet
 // ---------------------------------------------------------------------------
 
+#include <memory>
+#include <vector>
+#include <type_traits>
+
+template <typename Key, typename Item>
+class LLRBT {
+
+    class Node;
+    typedef std::shared_ptr<Node> NodePtr;  // used for clarity + ease of memory management
+
+///
+///     Public API
+/// The API is strictly the same as the BST one
+/// All the color operations only appear in the private implementation
+///
+public:
+
+    LLRBT():N(0) {}   // the root NodePtr is set to nullptr automatically
+
+    ///
+    /// Insert, retrieve, delete key-value pairs
+    ///
+
+    void put(const Key &key, Item value) { //   insert
+        /// insert new node, and update the tree structure recursively
+        root = put(root, key, value);   //  defined in private methods
+    }
+
+    /// I decided to make get return by address,
+    /// so that user can do test like: if(!get(someKey)) { ... }
+    /// Otherwise I don't really know how to deal with the case when the key is not present in the tree
+    Item *get(const Key &key) { //  retrieve
+        NodePtr x = get(root, key); //  defined in private methods
+        if(!x) return nullptr;
+        return &(x->value); //  I don't find this really elegant, but I can't think of another way right now
+    }
+
+    /// This function removes a key from the tree,
+    /// and recursively update the tree structure
+    void remove(const Key &key) {   //  delete
+        root = remove(root, key);   //  defined in private methods
+    }
+
+    ///
+    /// Describe current state of the tree
+    ///
+
+    bool contains(const Key &key){
+        if(!get(key)) return false;
+        return true;
+    }
+
+    int size() {return N;}
+
+    bool isEmpty() {return N == 0;}
+
+    /// return a pointer to the data associated with the min and max keys in the tree
+    Item *getMin() {
+        NodePtr x = min(root);
+        if(!x) return nullptr;
+        return &(x->value);
+    }
+
+    Item *getMax() {
+        NodePtr x = max(root);
+        if(!x) return nullptr;
+        return &(x->value);
+    }
+
+    /// return all keys in order. I chose to use a vector<Key> to store the keys
+    /// Could have been a queue<Key>. But in both cases, you can use for(auto k: *(tree->keys()) ) { ... }
+    /// and the vector allows to access 2nd smallest, 3rd smallest, ..., keys
+    ///
+    /// auto v = *(tree->keys()); // and v is your Keys vector
+
+    std::shared_ptr<std::vector<Key>> keys() {
+
+        std::shared_ptr<std::vector<Key>> v(new std::vector<Key>());
+        inorder<false>(root, v);    //  collects keys or items in order. See definition below
+
+        return v;
+    }
+
+    /// return all items in order (in Keys order)
+    std::shared_ptr<std::vector<Item>> items() {
+
+        std::shared_ptr<std::vector<Item>> v(new std::vector<Item>());
+        inorder<true>(root, v); // collects keys or items in order. See definition below
+
+        return v;
+    }
+
+private:
+
+    int N;  // number of nodes - for size() and isEmpty() methods
+    NodePtr root;
+
+    enum class Color {
+        RED,
+        BLACK
+    };
+
+    class Node{
+        friend class LLRBT<Key, Item>;
+
+        const Key key;  //  it is good practice to make the key immutable
+        Item value;
+        Color color;
+        NodePtr left, right;
+
+        Node(const Key &k, Item v, Color c): key(k), value(v), color(c) {
+            // no need to initialize left and right to null, shared_ptr does it for us.
+        }
+
+        bool isRed() {return color == Color::RED;}
+    };
+
+    /// helper functions for put and get implementations
+    NodePtr put(NodePtr x, const Key &key, Item value);
+    NodePtr get(NodePtr x, const Key &key);
+
+    /// helpers for remove key
+    NodePtr remove(NodePtr node, const Key &key);
+
+    // returns Node with max key
+    NodePtr max(NodePtr x) {
+        if (!x->right) return x;
+        else return max(x->right);
+    }
+
+    // returns Node with minimum key in subtree with root x
+    NodePtr min(NodePtr x) {
+        if (!x->left) return x;
+        else return min(x->left);
+    }
+
+    NodePtr removeMinNode(NodePtr x) {
+        if (!x->left) return x->right;
+        x->left = removeMinNode(x->left);
+
+        return x;
+    }
+
+    /// traversal functions. For now, I only have inorder
+
+    /// The function is defined as a template over a boolean isItem, so that I can use it for both keys() and items() methods,
+    /// that return different types (vector<Key> vs vector<Item>). This is just not to have to rewrite an almost identical inorder method.
+    template <bool isItem>
+    void inorder( NodePtr node, std::shared_ptr< std::vector< typename std::conditional<isItem, Item, Key>::type > > v );
+
+    ///
+    /// Color specific operations
+    ///
+
+    // used for insertion
+    NodePtr rotateLeft(NodePtr h);
+    NodePtr rotateRight(NodePtr h);
+    void flipColors(NodePtr h);
+
+};
+
+/// recursive implementation of put function
+template <typename Key, typename Item>
+typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::put(NodePtr node, const Key &key, Item value) {
+
+    /// if we reach nullptr, it means that the key doesn't exist in the tree
+    /// So, we create a new Node, update Node number, and return
+    if(!node) { ++N; return NodePtr(new Node(key, value)); }
+
+    /// if input key is smaller than current key, add (key, value) pair in left subtree
+    /// if it is greater, in right subtree. If it is equal, then the key already exists, and we simply update the value
+    if(key < node->key) node->left = put(node->left, key, value);
+    else if(key > node->key) node->right = put(node->right, key, value);
+    else node->value = value;
+
+    //  Color specific operations
+
+    if(!node->left->isRed() && node->right->isRed()) node = rotateLeft(node);
+    if(node->left->isRed() && node->left->left->isRed()) node = rotateRight(node);
+    if(node->left->isRed() && node->right->isRed()) flipColors(node);
+
+    return node;
+}
+
+//
+//  Color specific operations for insertion
+//
+template <typename Key, typename Item>
+typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::rotateLeft(NodePtr node){
+
+    return node;
+}
+
+template <typename Key, typename Item>
+typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::rotateRight(NodePtr node){
+
+    return node;
+}
+
+template <typename Key, typename Item>
+void LLRBT<Key, Item>::flipColors(NodePtr h){
+
+    return;
+}
+
+/// recursively look for Node with a given key in the tree, and return a pointer to said Node when found
+template <typename Key, typename Item>
+typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::get(NodePtr node, const Key &key) {
+
+    // if we reach a leaf, it means the key has not been found. So we return null
+    if(!node) return nullptr;
+
+    //  self-explanatory
+    if(key < node->key) return get(node->left, key);
+    else if(key > node->key) return get(node->right, key);
+    else return node;
+}
+
+/// The remove method is the only one that is really different than the BST case
+template <typename Key, typename Item>
+typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::remove(NodePtr node, const Key &k) {
+
+    return node;
+}
+
+
+/// recursive implementation of In-order traversal for a BST. Pretty obvious
+template <typename Key, typename Item> template <bool isItem>
+void LLRBT<Key, Item>::inorder( NodePtr node, std::shared_ptr< std::vector< typename std::conditional<isItem, Item, Key>::type > > v) {
+
+    if(!node) return;
+
+    inorder<isItem>(node->left, v);
+    v->push_back(isItem ? node->value : node->key); // if called from items() method, push_back the payload. Else push_back key
+    inorder<isItem>(node->right, v);
+}
 
 #endif // LLRBT_H
