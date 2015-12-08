@@ -54,6 +54,7 @@ public:
     void put(const Key &key, Item value) { //   insert
         /// insert new node, and update the tree structure recursively
         root = put(root, key, value);   //  defined in private methods
+        root->color = Color::BLACK;
     }
 
     /// I decided to make get return by address,
@@ -195,7 +196,7 @@ typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::put(NodePtr node, const Key
 
     /// if we reach nullptr, it means that the key doesn't exist in the tree
     /// So, we create a new Node, update Node number, and return
-    if(!node) { ++N; return NodePtr(new Node(key, value)); }
+    if(!node) { ++N; return NodePtr(new Node(key, value, Color::RED)); }
 
     /// if input key is smaller than current key, add (key, value) pair in left subtree
     /// if it is greater, in right subtree. If it is equal, then the key already exists, and we simply update the value
@@ -205,7 +206,7 @@ typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::put(NodePtr node, const Key
 
     //  Color specific operations
 
-    if(!node->left->isRed() && node->right->isRed()) node = rotateLeft(node);
+    if(!(node->left->isRed()) && node->right->isRed()) node = rotateLeft(node);
     if(node->left->isRed() && node->left->left->isRed()) node = rotateRight(node);
     if(node->left->isRed() && node->right->isRed()) flipColors(node);
 
@@ -215,20 +216,47 @@ typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::put(NodePtr node, const Key
 //
 //  Color specific operations for insertion
 //
+
+//
+//  LLRB trees are left-leaning, i.e. the red nodes are always left children
+//  The method below is used when we have the opposite: black left child and red right child.
+//
 template <typename Key, typename Item>
 typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::rotateLeft(NodePtr node){
 
-    return node;
+    NodePtr x = node->right;
+    node->right = x->left;
+    x->left = node;
+    x->color = x->left->color;
+    x->left->color = Color::RED;
+
+    return x;
 }
 
+//
+//  LLRB trees cannot have two red edges in a row, i.e. if a node is red, its children MUST be black
+//  When it's not the case, we use rotateRight to restore the balance
+//
 template <typename Key, typename Item>
 typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::rotateRight(NodePtr node){
 
-    return node;
+    NodePtr x = node->left;
+    node->left = x->right;
+    x->right = node;
+    x->color = x->right->color;
+    x->right->color = Color::RED;
+
+    return x;
 }
 
 template <typename Key, typename Item>
-void LLRBT<Key, Item>::flipColors(NodePtr h){
+void LLRBT<Key, Item>::flipColors(NodePtr node){
+
+    Color tmp = node->color;
+
+    node->color = node->left->color;
+    node->left->color = tmp;
+    node->right->color = tmp;
 
     return;
 }
