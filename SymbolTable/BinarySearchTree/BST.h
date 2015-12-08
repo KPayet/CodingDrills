@@ -21,8 +21,6 @@
 #include <vector>
 #include <type_traits>
 
-#include <iostream>
-
 template <class Key, class Item>
 class BST {
 
