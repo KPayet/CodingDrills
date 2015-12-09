@@ -71,7 +71,13 @@ public:
     /// This function removes a key from the tree,
     /// and recursively update the tree structure
     void remove(const Key &key) {   //  delete
+
+        if (!isRed(root->left) && !isRed(root->right))
+            root->color = Color::RED;
+
         root = remove(root, key);   //  defined in private methods
+
+        if (!isEmpty()) root->color = Color::BLACK;
     }
 
     ///
@@ -283,7 +289,28 @@ typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::get(NodePtr node, const Key
 template <typename Key, typename Item>
 typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::remove(NodePtr node, const Key &k) {
 
-    return node;
+    if (k < node->key)  {
+        if (!isRed(node->left) && !isRed(node->left->left))
+            node = moveRedLeft(node);
+        node->left = remove(node->left, k);
+    }
+    else {
+        if (isRed(node->left))
+            node = rotateRight(node);
+        if (k == node->key && !(node->right))
+            return nullptr;
+        if ( !isRed(node->right) && !isRed(node->right->left) )
+            node = moveRedRight(node);
+        if (k == node->key) {
+            NodePtr x = min(node->right);
+            node->key = x->key;
+            node->value = x->value;
+
+            node->right = removeMinNode(node->right);
+        }
+        else node->right = remove(node->right, k);
+    }
+    return balance(node);
 }
 
 
