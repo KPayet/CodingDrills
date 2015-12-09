@@ -19,10 +19,11 @@ int main(int argc, char *argv[])
     tree->put(2, 1.2);
     tree->put(10, 1.10);
 
-//    auto v = *(tree->keys());
-//    for(auto k: v)
-//        cout<<k<<endl;
-//
-//    delete tree;
+    auto v = *(tree->keys());
+    for(auto k: v)
+        cout<<k<<endl;
+
+    delete tree;
+
     return 0;
 }

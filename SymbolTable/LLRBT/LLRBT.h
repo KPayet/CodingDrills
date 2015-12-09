@@ -32,6 +32,8 @@
 #include <vector>
 #include <type_traits>
 
+#include <iostream>
+
 template <typename Key, typename Item>
 class LLRBT {
 
@@ -142,8 +144,6 @@ private:
         Node(const Key &k, Item v, Color c): key(k), value(v), color(c) {
             // no need to initialize left and right to null, shared_ptr does it for us.
         }
-
-        bool isRed() {return color == Color::RED;}
     };
 
     /// helper functions for put and get implementations
@@ -183,6 +183,11 @@ private:
     /// Color specific operations
     ///
 
+    bool isRed(NodePtr node) {
+        if(!node) return false;
+        else return node->color == Color::RED;
+    }
+
     // used for insertion
     NodePtr rotateLeft(NodePtr h);
     NodePtr rotateRight(NodePtr h);
@@ -206,9 +211,9 @@ typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::put(NodePtr node, const Key
 
     //  Color specific operations
 
-    if(!(node->left->isRed()) && node->right->isRed()) node = rotateLeft(node);
-    if(node->left->isRed() && node->left->left->isRed()) node = rotateRight(node);
-    if(node->left->isRed() && node->right->isRed()) flipColors(node);
+    if(!isRed(node->left) && isRed(node->right)) node = rotateLeft(node);
+    if(isRed(node->left) && isRed(node->left->left)) node = rotateRight(node);
+    if(isRed(node->left) && isRed(node->right)) flipColors(node);
 
     return node;
 }
