@@ -72,6 +72,8 @@ public:
     /// and recursively update the tree structure
     void remove(const Key &key) {   //  delete
 
+        if(!contains(key))  return;
+
         if (!isRed(root->left) && !isRed(root->right))
             root->color = Color::RED;
 
@@ -142,7 +144,7 @@ private:
     class Node{
         friend class LLRBT<Key, Item>;
 
-        const Key key;  //  it is good practice to make the key immutable
+        Key key;  //  The key needs to be modifiable for deletion implementation. So, no const like in the simple BST's case.
         Item value;
         Color color;
         NodePtr left, right;
@@ -171,11 +173,17 @@ private:
         else return min(x->left);
     }
 
+    // deletes Node with minimum key in subtree with root x
     NodePtr removeMinNode(NodePtr x) {
-        if (!x->left) return x->right;
+
+        if(!x->left) return nullptr;
+
+        if (!isRed(x->left) && !isRed(x->left->left))
+            x = moveRedLeft(x);
+
         x->left = removeMinNode(x->left);
 
-        return x;
+        return balance(x);
     }
 
     /// traversal functions. For now, I only have inorder
@@ -194,10 +202,15 @@ private:
         else return node->color == Color::RED;
     }
 
-    // used for insertion
-    NodePtr rotateLeft(NodePtr h);
-    NodePtr rotateRight(NodePtr h);
-    void flipColors(NodePtr h);
+    // used for insertion and deletion
+    NodePtr rotateLeft(NodePtr node);
+    NodePtr rotateRight(NodePtr node);
+    void flipColors(NodePtr node);
+
+    //  used for deletion
+    NodePtr moveRedLeft(NodePtr node);
+    NodePtr moveRedRight(NodePtr node);
+    NodePtr balance(NodePtr node);
 
 };
 
@@ -313,6 +326,45 @@ typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::remove(NodePtr node, const 
     return balance(node);
 }
 
+//
+//  Color specific operations for remove
+//
+
+template <typename Key, typename Item>
+typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::moveRedLeft(NodePtr node){
+
+    flipColors(node);
+
+    if (isRed(node->right->left)) {
+        node->right = rotateRight(node->right);
+        node = rotateLeft(node);
+        flipColors(node);
+    }
+
+    return node;
+}
+
+template <typename Key, typename Item>
+typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::moveRedRight(NodePtr node){
+
+    flipColors(node);
+
+    if (isRed(node->left->left)) {
+        node = rotateRight(node);
+        flipColors(node);
+    }
+    return node;
+}
+
+template <typename Key, typename Item>
+typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::balance(NodePtr node){
+
+    if (isRed(node->right)) node = rotateLeft(node);
+    if (isRed(node->left) && isRed(node->left->left)) node = rotateRight(node);
+    if (isRed(node->left) && isRed(node->right)) flipColors(node);
+
+    return node;
+}
 
 /// recursive implementation of In-order traversal for a BST. Pretty obvious
 template <typename Key, typename Item> template <bool isItem>

@@ -17,11 +17,20 @@ int main(int argc, char *argv[])
     tree->put(1, 1.1);
     tree->put(4, 1.4);
     tree->put(2, 1.2);
-    tree->put(10, 1.10);
+    tree->put(10, 11.10);
 
-    auto v = *(tree->keys());
-    for(auto k: v)
-        cout<<k<<endl;
+    cout<<*(tree->getMin())<<" "<<*(tree->getMax())<<endl;
+
+    tree->remove(3);
+    tree->remove(3);
+    tree->remove(5);
+    tree->remove(4);
+    tree->remove(6);
+    tree->remove(8);
+
+
+    cout<<*(tree->getMin())<<" "<<*(tree->getMax())<<endl;
+
 
     delete tree;
 
