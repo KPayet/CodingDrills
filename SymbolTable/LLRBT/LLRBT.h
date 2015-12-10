@@ -43,7 +43,6 @@ class LLRBT {
 ///
 ///     Public API
 /// The API is strictly the same as the BST one
-/// All the color operations only appear in the private implementation
 ///
 public:
 
@@ -56,7 +55,7 @@ public:
     void put(const Key &key, Item value) { //   insert
         /// insert new node, and update the tree structure recursively
         root = put(root, key, value);   //  defined in private methods
-        root->color = Color::BLACK;
+        root->color = Color::BLACK;     // in case of flipColors, root might now be RED
     }
 
     /// I decided to make get return by address,
@@ -75,11 +74,11 @@ public:
         if(!contains(key))  return;
 
         if (!isRed(root->left) && !isRed(root->right))
-            root->color = Color::RED;
+            root->color = Color::RED;                   // this is only temporary. We will make the root BLACK again below
 
         root = remove(root, key);   //  defined in private methods
 
-        if (!isEmpty()) root->color = Color::BLACK;
+        if (!isEmpty()) root->color = Color::BLACK;     // see ?
     }
 
     ///
@@ -149,14 +148,12 @@ private:
         Color color;
         NodePtr left, right;
 
-        Node(const Key &k, Item v, Color c): key(k), value(v), color(c) {
-            // no need to initialize left and right to null, shared_ptr does it for us.
-        }
+        Node(const Key &k, Item v, Color c): key(k), value(v), color(c) { }
     };
 
     /// helper functions for put and get implementations
     NodePtr put(NodePtr x, const Key &key, Item value);
-    NodePtr get(NodePtr x, const Key &key);
+    NodePtr get(NodePtr x, const Key &key); // implementation is identical to BST
 
     /// helpers for remove key
     NodePtr remove(NodePtr node, const Key &key);
@@ -219,7 +216,7 @@ template <typename Key, typename Item>
 typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::put(NodePtr node, const Key &key, Item value) {
 
     /// if we reach nullptr, it means that the key doesn't exist in the tree
-    /// So, we create a new Node, update Node number, and return
+    /// So, we create a new RED Node, update Node number, and return
     if(!node) { ++N; return NodePtr(new Node(key, value, Color::RED)); }
 
     /// if input key is smaller than current key, add (key, value) pair in left subtree
@@ -273,6 +270,10 @@ typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::rotateRight(NodePtr node){
     return x;
 }
 
+//
+//  Nodes cannot have 2 RED children.
+//  The method below is used to correct that kind of problem
+//
 template <typename Key, typename Item>
 void LLRBT<Key, Item>::flipColors(NodePtr node){
 
@@ -285,7 +286,10 @@ void LLRBT<Key, Item>::flipColors(NodePtr node){
     return;
 }
 
-/// recursively look for Node with a given key in the tree, and return a pointer to said Node when found
+/// recursively look for Node with a given key in the tree, and return a pointer to said Node when
+//
+//  get implementation is strictly identical to the BST one. We just ignore Color
+//
 template <typename Key, typename Item>
 typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::get(NodePtr node, const Key &key) {
 
@@ -298,7 +302,7 @@ typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::get(NodePtr node, const Key
     else return node;
 }
 
-/// The remove method is the only one that is really different than the BST case
+/// The remove method is the only one that is really (very) different than the BST case
 template <typename Key, typename Item>
 typename LLRBT<Key, Item>::NodePtr LLRBT<Key, Item>::remove(NodePtr node, const Key &k) {
 

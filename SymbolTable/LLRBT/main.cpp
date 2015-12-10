@@ -24,9 +24,8 @@ int main(int argc, char *argv[])
     tree->remove(3);
     tree->remove(3);
     tree->remove(5);
-    tree->remove(4);
-    tree->remove(6);
     tree->remove(8);
+    tree->remove(10);
 
 
     cout<<*(tree->getMin())<<" "<<*(tree->getMax())<<endl;
