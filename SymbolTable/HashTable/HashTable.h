@@ -19,6 +19,9 @@
 //  The latter must have some properties, such as uniform distribution of hash values (or close), it must be deterministic,
 //  it uses all input data ...
 //  In this implementation, I won't be implementing my own hash function, but instead use
+
+//  This implementation uses the separate chaining method for resolving collision, i.e. the buckets are represented by some array,
+//  and the elements of each buckets are linked-list where each Node holds a key-value pair
 //
 // Author: Kevin Payet
 // ---------------------------------------------------------------------------
@@ -31,6 +34,25 @@ class HashTable {
 
 public:
 
+    /// Constructors
+    // We can think of 3 types of constructors that can be useful
+
+    //  Default
+    HashTable() {
+        N = 0;
+        M = 127;    // well, why not ?
+    }
+
+    //  When the user has an idea of how many buckets (s)he needs
+    HashTable(int M): N(0) {
+        this->M = M;
+    }
+
+    //  When the user knows approximately how many keys will be used, and wants us to find perfect number of buckets
+    HashTable(int nKeys): N(0) {
+        M = nKeys/5;    // it depends on the hash function used. Different functions have different preferences
+    }
+
     void put(const Key &key, Item value);
     Item *get(const Key &key);
     void remove(const Key &key);
@@ -40,6 +62,29 @@ public:
     bool isEmpty();
 
 private:
+
+    class Node;
+    typedef std::shared_ptr<Node> NodePtr;
+
+    int N;  //  number of keys
+    int M;   // number of buckets
+
+    //  the symbol table is represented as a vector of Node, where st[i] is the first Node of
+    //  a linked-list composed of all key-value pairs that hashed to bucket i
+    std::vector<NodePtr> st;
+
+    //  We also need to declare a Node abstraction
+    class Node {
+        friend class HashTable<Key, Item>;
+
+        Key key;
+        Item value;
+
+        NodePtr next;
+        NodePtr prev;   // we define a doubly-linked list
+
+        Node(const Key &k, Item v, NodePtr n = nullptr, NodePtr p = nullptr): key(k), value(v), next(n), prev(p) {}
+    };
 
     int hash(const Key &key);
 };
