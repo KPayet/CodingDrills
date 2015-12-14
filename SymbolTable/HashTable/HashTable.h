@@ -42,11 +42,13 @@ public:
     HashTable() {
         N = 0;
         M = 1021;    // well, why not ?
+        initST();
     }
 
     //  When the user knows approximately how many keys will be used, and wants us to find perfect number of buckets
     HashTable(int nKeys): N(0) {
         M = static_cast<int>(nKeys/0.75) + 1;    // I specify a hash table that will have a load factor of .75 max
+        initST();
     }
 
     void put(const Key &key, Item value);
@@ -85,7 +87,37 @@ private:
         Node(const Key &k, Item v, NodePtr n = nullptr, NodePtr p = nullptr): key(k), value(v), next(n), prev(p) {}
     };
 
-    std::hash<Key> hash;
+    void initST() {
+        for(size_t i=0; i < M; ++i)
+            st.push_back(std::shared_ptr<Node>());
+    }
+
+    std::hash<Key> hash_fn;
+
+    int64_t hashKey(const Key &k) {
+        return hash_fn(k) % M;
+    }
 };
+
+template <typename Key, typename Item>
+void HashTable<Key, Item>::put(const Key &key, Item value){
+
+    int64_t i = hashKey(key);
+
+    //  we first look if the key already exists in the table
+    //  if true, update the value
+    NodePtr x = st[i];
+
+//    for(NodePtr x = st[i]; x != nullptr; x = x->next) {
+//        if(key == x->key) x->value = value;
+//        return;
+//    }
+
+    //  key doesn't exist yet
+    //  add it in bucket i, as new first node
+//    st[i] = NodePtr(new Node(key, value, st[i], nullptr));
+
+    return;
+}
 
 #endif // HASHTABLE_H
