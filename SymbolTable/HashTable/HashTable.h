@@ -28,6 +28,7 @@
 
 #include <memory>
 #include <vector>
+#include <functional>
 
 template <typename Key, typename Item>
 class HashTable {
@@ -40,26 +41,24 @@ public:
     //  Default
     HashTable() {
         N = 0;
-        M = 127;    // well, why not ?
-    }
-
-    //  When the user has an idea of how many buckets (s)he needs
-    HashTable(int M): N(0) {
-        this->M = M;
+        M = 1021;    // well, why not ?
     }
 
     //  When the user knows approximately how many keys will be used, and wants us to find perfect number of buckets
     HashTable(int nKeys): N(0) {
-        M = nKeys/5;    // it depends on the hash function used. Different functions have different preferences
+        M = static_cast<int>(nKeys/0.75) + 1;    // I specify a hash table that will have a load factor of .75 max
     }
 
     void put(const Key &key, Item value);
     Item *get(const Key &key);
     void remove(const Key &key);
 
-    bool contains(const Key &key);
-    int size();
-    bool isEmpty();
+    bool contains(const Key &key) {
+        if(!get(key)) return false;
+        return true;
+    }
+    int size() {return N;}
+    bool isEmpty() { return N == 0;}
 
 private:
 
@@ -86,7 +85,7 @@ private:
         Node(const Key &k, Item v, NodePtr n = nullptr, NodePtr p = nullptr): key(k), value(v), next(n), prev(p) {}
     };
 
-    int hash(const Key &key);
+    std::hash<Key> hash;
 };
 
 #endif // HASHTABLE_H
