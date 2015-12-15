@@ -145,8 +145,11 @@ void HashTable<Key, Item>::remove(const Key &key){
     for(NodePtr x = st[i]; x != nullptr; x = x->next) {
         if(key == x->key){  // We found the Node
             //  rearrange the links to bypass the current Node
-            x->prev->next = x->next;
-            x->next->prev = x->prev;
+            NodePtr p = x->prev, n = x->next;
+            if(!p && !n) {st[i] = nullptr; return; }
+            else if(!p) {n->prev = p; st[i] = n;}   // DEBUG ME :( !!!!
+            p->next = n;
+            n->prev = p;
             //  Now there is no more link to Node with Key key => shared_ptr will deal with deleting it
             --N;
             return;
