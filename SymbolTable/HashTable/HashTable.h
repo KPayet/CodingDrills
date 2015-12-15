@@ -102,22 +102,57 @@ private:
 template <typename Key, typename Item>
 void HashTable<Key, Item>::put(const Key &key, Item value){
 
-    int64_t i = hashKey(key);
+    size_t i = hashKey(key);
 
     //  we first look if the key already exists in the table
     //  if true, update the value
-    NodePtr x = st[i];
-
-//    for(NodePtr x = st[i]; x != nullptr; x = x->next) {
-//        if(key == x->key) x->value = value;
-//        return;
-//    }
+    for(NodePtr x = st[i]; x != nullptr; x = x->next) {
+        if(key == x->key) x->value = value;
+        return;
+    }
 
     //  key doesn't exist yet
     //  add it in bucket i, as new first node
-//    st[i] = NodePtr(new Node(key, value, st[i], nullptr));
+    st[i] = NodePtr(new Node(key, value, st[i], nullptr));
+    ++N;
 
     return;
 }
 
+template <typename Key, typename Item>
+Item* HashTable<Key, Item>::get(const Key &key){
+
+    //  find bucket
+    size_t i = hashKey(key);
+
+    //  look for Node with given key in bucket
+    for(NodePtr x = st[i]; x != nullptr; x = x->next) {
+        if(key == x->key)   //  if Node exist we return a pointer to the Item
+            return &(st[i]->value);
+    }
+
+    //  The Node doesn't exist in the table
+    return nullptr;
+}
+
+template <typename Key, typename Item>
+void HashTable<Key, Item>::remove(const Key &key){
+
+    //  find bucket
+    size_t i = hashKey(key);
+
+    //  look for Node with given key in bucket
+    for(NodePtr x = st[i]; x != nullptr; x = x->next) {
+        if(key == x->key){  // We found the Node
+            //  rearrange the links to bypass the current Node
+            x->prev->next = x->next;
+            x->next->prev = x->prev;
+            //  Now there is no more link to Node with Key key => shared_ptr will deal with deleting it
+            --N;
+            return;
+        }
+    }
+
+    return;
+}
 #endif // HASHTABLE_H
