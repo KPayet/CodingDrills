@@ -144,12 +144,17 @@ void HashTable<Key, Item>::remove(const Key &key){
     //  look for Node with given key in bucket
     for(NodePtr x = st[i]; x != nullptr; x = x->next) {
         if(key == x->key){  // We found the Node
-            //  rearrange the links to bypass the current Node
+
+            //  find previous and next of Node x
             NodePtr p = x->prev, n = x->next;
-            if(!p && !n) {st[i] = nullptr; return; }
-            else if(!p) {n->prev = p; st[i] = n;}   // DEBUG ME :( !!!!
-            p->next = n;
-            n->prev = p;
+
+            if(!p && !n) {st[i] = nullptr;}         //  if x is the only Node of the list
+            else if(!p) {n->prev = p; st[i] = n;}   //  if x is the first Node
+            else if(!n) {p->next = nullptr;}        //  if x is last Node of the list
+            else {                                  //  if x is somewhere in the middle of the list
+                p->next = n;
+                n->prev = p;
+            }
             //  Now there is no more link to Node with Key key => shared_ptr will deal with deleting it
             --N;
             return;
